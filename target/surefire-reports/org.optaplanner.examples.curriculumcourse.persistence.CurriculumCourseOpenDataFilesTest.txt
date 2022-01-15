@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseOpenDataFilesTest
+-------------------------------------------------------------------------------
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.304 s - in org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseOpenDataFilesTest

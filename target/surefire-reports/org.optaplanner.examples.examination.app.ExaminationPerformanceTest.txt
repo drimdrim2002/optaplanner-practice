@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.optaplanner.examples.examination.app.ExaminationPerformanceTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.968 s - in org.optaplanner.examples.examination.app.ExaminationPerformanceTest

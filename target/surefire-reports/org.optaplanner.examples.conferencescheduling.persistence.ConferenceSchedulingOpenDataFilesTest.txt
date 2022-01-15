@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingOpenDataFilesTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.302 s - in org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingOpenDataFilesTest

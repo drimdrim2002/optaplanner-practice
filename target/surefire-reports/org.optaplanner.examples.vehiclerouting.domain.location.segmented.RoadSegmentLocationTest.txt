@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocationTest

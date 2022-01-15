@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.optaplanner.examples.examination.persistence.ExaminationOpenDataFilesTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.84 s - in org.optaplanner.examples.examination.persistence.ExaminationOpenDataFilesTest
