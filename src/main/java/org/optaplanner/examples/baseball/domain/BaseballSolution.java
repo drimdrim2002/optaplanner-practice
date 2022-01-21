@@ -5,6 +5,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -15,7 +16,7 @@ public class BaseballSolution extends AbstractPersistable {
 
     private List<Match> matchList;
     private  List<Period> periodList;
-    private HardSoftLongScore hardSoftLongScore;
+    private HardSoftScore hardSoftLongScore;
 
     @PlanningEntityCollectionProperty
     public List<Match> getMatchList() {
@@ -37,11 +38,11 @@ public class BaseballSolution extends AbstractPersistable {
     }
 
     @PlanningScore
-    public HardSoftLongScore getHardSoftLongScore() {
+    public HardSoftScore getHardSoftLongScore() {
         return hardSoftLongScore;
     }
 
-    public void setHardSoftLongScore(HardSoftLongScore hardSoftLongScore) {
+    public void setHardSoftLongScore(HardSoftScore hardSoftLongScore) {
         this.hardSoftLongScore = hardSoftLongScore;
     }
 }
