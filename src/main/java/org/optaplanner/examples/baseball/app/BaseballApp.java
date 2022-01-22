@@ -140,7 +140,8 @@ public class BaseballApp {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
         try {
-            Reader reader = new FileReader("D:\\JavaProject\\optaplanner-distribution-8.5.0.Final\\examples\\sources\\data\\baseball\\input.json");
+            Reader reader = new FileReader("data/baseball/input.json");
+//            Reader reader = new FileReader("../../../data/baseball/input.json");
             jsonObject = (JSONObject) parser.parse(reader);
             logger.info(jsonObject.toString());
 
