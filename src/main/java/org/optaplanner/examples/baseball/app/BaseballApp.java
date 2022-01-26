@@ -22,12 +22,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 public class BaseballApp {
 
     public static final String DATA_DIR_NAME = "baseball";
-    private static Logger logger = LoggerFactory.getLogger(BaseballApp.class);
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final Logger logger = LoggerFactory.getLogger(BaseballApp.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) {
         // 데이터 읽기
@@ -40,13 +41,33 @@ public class BaseballApp {
             // solution 만들기
             BaseballSolution unsolvedSolution = makeSolution(jsonObject);
 
+            JSONArray initialPlanArray = (JSONArray) jsonObject.get("initialPlan");
+
+            HashMap<String, Match> matchHashMap = new HashMap<>();
+            for (Match match : unsolvedSolution.getMatchList()) {
+                String home = match.getHome().toString();
+                String away = match.getAway().toString();
+
+            }
+            HashMap<LocalDateTime, Period> periodHashMap = new HashMap<>();
+            for (Period period : unsolvedSolution.getPeriodList()) {
+                LocalDateTime startTIme = period.getStartTime();
+                periodHashMap.put(startTIme, period);
+            }
+
             // initial 만들기
+            for (Object o : initialPlanArray) {
+                JSONObject initialPlanInfo = (JSONObject) o;
+                LocalDateTime datetime = LocalDateTime.parse((String) initialPlanInfo.get("datetime"), formatter);
+                String home = initialPlanInfo.get("home").toString();
+                String away = initialPlanInfo.get("away").toString();
+            }
 
 
             SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource("org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
-            Solver solver = solverFactory.buildSolver();
+            Solver<BaseballSolution> solver = solverFactory.buildSolver();
 
-            BaseballSolution solvedSolution = (BaseballSolution) solver.solve(unsolvedSolution);
+            BaseballSolution solvedSolution = solver.solve(unsolvedSolution);
 
             for (Match match : solvedSolution.getMatchList()) {
                 logger.info("match : " + match.toString() + ", period : " + match.getPeriod().toString());
@@ -63,8 +84,8 @@ public class BaseballApp {
     private static BaseballSolution makeSolution(JSONObject jsonObject) {
         HashMap<String, HashMap<String, BigDecimal>> totalDistanceMap = new HashMap<>();
         JSONArray distanceMatrixArray = (JSONArray) jsonObject.get("distanceMatrix");
-        for (int i = 0; i < distanceMatrixArray.size(); i++) {
-            JSONObject distanceInfo = (JSONObject) distanceMatrixArray.get(i);
+        for (Object o : distanceMatrixArray) {
+            JSONObject distanceInfo = (JSONObject) o;
             String from = (String) distanceInfo.get("from");
             String to = (String) distanceInfo.get("to");
             BigDecimal distance = BigDecimal.valueOf((Double) distanceInfo.get("distance"));
@@ -77,34 +98,30 @@ public class BaseballApp {
 
         HashMap<String, Team> teamHashMap = new HashMap<>();
         JSONArray teamJsonArray = (JSONArray) jsonObject.get("teams");
-        for (int i = 0; i < teamJsonArray.size(); i++) {
+        IntStream.range(0, teamJsonArray.size()).forEach(i -> {
             JSONObject teamInfo = (JSONObject) teamJsonArray.get(i);
             String name = (String) teamInfo.get("name");
             String stadium = (String) teamInfo.get("stadium");
             Set<String> toSet = totalDistanceMap.get(name).keySet();
             HashMap<String, BigDecimal> distanceTo = new HashMap<>();
-
             for (String to : toSet) {
                 BigDecimal distance = totalDistanceMap.get(name).get(to);
                 distanceTo.put(to, distance);
             }
             Team team = new Team(i, name, stadium, distanceTo);
             teamHashMap.put(name, team);
-        }
+        });
 
         List<Match> matchList = new ArrayList<>();
         JSONArray matchJsonArray = (JSONArray) jsonObject.get("matches");
-        for (int i = 0; i < matchJsonArray.size(); i++) {
+        IntStream.range(0, matchJsonArray.size()).forEach(i -> {
             JSONObject matchInfo = (JSONObject) matchJsonArray.get(i);
             Team homeTeam = teamHashMap.get(matchInfo.get("home"));
             Team awayTeam = teamHashMap.get(matchInfo.get("away"));
             long consecutive = (Long) matchInfo.get("matches");
-
-//                double consecutive = Double.parseDouble( (String) matchInfo.get("matches"));
             Match match = new Match(i, homeTeam, awayTeam, (int) consecutive);
             matchList.add(match);
-
-        }
+        });
 
         List<Period> periodList = new ArrayList<>();
         JSONArray periodArray = (JSONArray) jsonObject.get("calendar");
