@@ -4,16 +4,16 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import java.time.LocalDateTime;
 
-public class Period extends AbstractPersistable {
+public class Calendar extends AbstractPersistable {
 
     private LocalDateTime startTime;
-    private Period next;
-    private Period prev;
+    private Calendar next;
+    private Calendar prev;
     private int consecutive;
     private boolean weekend;
     private boolean holiday;
 
-    public Period(long id, LocalDateTime startTime, int consecutive, boolean weekend, boolean holiday) {
+    public Calendar(long id, LocalDateTime startTime, int consecutive, boolean weekend, boolean holiday) {
         super(id);
         this.startTime = startTime;
         this.consecutive = consecutive;
@@ -29,19 +29,19 @@ public class Period extends AbstractPersistable {
         this.startTime = startTime;
     }
 
-    public Period getNext() {
+    public Calendar getNext() {
         return next;
     }
 
-    public void setNext(Period next) {
+    public void setNext(Calendar next) {
         this.next = next;
     }
 
-    public Period getPrev() {
+    public Calendar getPrev() {
         return prev;
     }
 
-    public void setPrev(Period prev) {
+    public void setPrev(Calendar prev) {
         this.prev = prev;
     }
 
@@ -71,7 +71,7 @@ public class Period extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return "Period{" +
+        return "Calendar{" +
                 "startTime=" + startTime +
                 ", consecutive=" + consecutive +
                 ", weekend=" + weekend +

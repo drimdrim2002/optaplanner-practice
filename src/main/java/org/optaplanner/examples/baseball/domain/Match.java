@@ -14,7 +14,7 @@ public class Match extends AbstractPersistable {
     private boolean pinned;
 
     // planning variable
-    private Period period;
+    private Calendar calendar;
 
 
     public Match() {
@@ -63,13 +63,13 @@ public class Match extends AbstractPersistable {
         this.consecutive = consecutive;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
-    public Period getPeriod() {
-        return period;
+    @PlanningVariable(valueRangeProviderRefs = {"calendarRange"})
+    public Calendar getPeriod() {
+        return calendar;
     }
 
-    public void setPeriod(Period period) {
-        this.period = period;
+    public void setPeriod(Calendar calendar) {
+        this.calendar = calendar;
     }
 
     @Override

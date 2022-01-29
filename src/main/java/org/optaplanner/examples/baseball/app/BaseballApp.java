@@ -5,10 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.baseball.domain.BaseballSolution;
-import org.optaplanner.examples.baseball.domain.Match;
-import org.optaplanner.examples.baseball.domain.Period;
-import org.optaplanner.examples.baseball.domain.Team;
+import org.optaplanner.examples.baseball.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,10 +46,10 @@ public class BaseballApp {
                 String away = match.getAway().toString();
 
             }
-            HashMap<LocalDateTime, Period> periodHashMap = new HashMap<>();
-            for (Period period : unsolvedSolution.getPeriodList()) {
-                LocalDateTime startTIme = period.getStartTime();
-                periodHashMap.put(startTIme, period);
+            HashMap<LocalDateTime, Calendar> periodHashMap = new HashMap<>();
+            for (Calendar calendar : unsolvedSolution.getCalendarList()) {
+                LocalDateTime startTIme = calendar.getStartTime();
+                periodHashMap.put(startTIme, calendar);
             }
 
             // initial 만들기
@@ -123,9 +120,9 @@ public class BaseballApp {
             matchList.add(match);
         });
 
-        List<Period> periodList = new ArrayList<>();
+        List<Calendar> periodList = new ArrayList<>();
         JSONArray periodArray = (JSONArray) jsonObject.get("calendar");
-        Period prev = null;
+        Calendar prev = null;
         for (int i = 0; i < periodArray.size(); i++) {
             JSONObject periodInfo = (JSONObject) periodArray.get(i);
             LocalDateTime startTime = LocalDateTime.parse((String) periodInfo.get("datetime"), formatter);
@@ -133,13 +130,13 @@ public class BaseballApp {
             boolean holiday = ((Double) periodInfo.get("holiday")) == 1.0 ? true : false;
             boolean weekend = ((Double) periodInfo.get("weekend")) == 1.0 ? true : false;
 
-            Period period = new Period(i, startTime, (int) consecutive, holiday, weekend);
+            Calendar period = new Calendar(i, startTime, (int) consecutive, holiday, weekend);
             period.setPrev(prev);
             periodList.add(period);
             prev = period;
         }
 
-        for (Period period : periodList) {
+        for (Calendar period : periodList) {
             if (period.getPrev() != null) {
                 period.getPrev().setNext(period);
             }
@@ -147,7 +144,7 @@ public class BaseballApp {
 
         BaseballSolution baseballSolution = new BaseballSolution();
         baseballSolution.setMatchList(matchList);
-        baseballSolution.setPeriodList(periodList);
+        baseballSolution.setCalendarList(periodList);
         baseballSolution.setId(0L);
 
         return baseballSolution;
