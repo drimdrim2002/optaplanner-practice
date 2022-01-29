@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.optaplanner.examples.curriculumcourse.optional.score.CurriculumCourseConstraintProviderTest
--------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.451 s - in org.optaplanner.examples.curriculumcourse.optional.score.CurriculumCourseConstraintProviderTest

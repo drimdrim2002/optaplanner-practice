@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.optaplanner.examples.flightcrewscheduling.persistence.FlightCrewSchedulingOpenDataFilesTest
--------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.042 s - in org.optaplanner.examples.flightcrewscheduling.persistence.FlightCrewSchedulingOpenDataFilesTest

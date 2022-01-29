@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.optaplanner.examples.cheaptime.persistence.CheapTimeOpenDataFilesTest
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s - in org.optaplanner.examples.cheaptime.persistence.CheapTimeOpenDataFilesTest

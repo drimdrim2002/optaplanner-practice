@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.optaplanner.examples.cheaptime.persistence.CheapTimeImporterTest
--------------------------------------------------------------------------------
-Tests run: 60, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.667 s - in org.optaplanner.examples.cheaptime.persistence.CheapTimeImporterTest
