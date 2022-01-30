@@ -25,6 +25,7 @@
   <!-- Optimization algorithms configuration -->
   <termination>
     <minutesSpentLimit>2</minutesSpentLimit>
+    <unimprovedSecondsSpentLimit>3</unimprovedSecondsSpentLimit>
   </termination>
 
   <!-- Power tweaked optimization algorithms configuration -->
@@ -40,7 +41,7 @@
       <lateAcceptanceSize>200</lateAcceptanceSize>
     </acceptor>
     <forager>
-      <acceptedCountLimit>1000</acceptedCountLimit>
+      <acceptedCountLimit>200</acceptedCountLimit>
     </forager>
   </localSearch>
 

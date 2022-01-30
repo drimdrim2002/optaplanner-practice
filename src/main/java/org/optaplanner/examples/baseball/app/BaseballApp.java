@@ -43,9 +43,65 @@ public class BaseballApp {
             Solver<BaseballSolution> solver = solverFactory.buildSolver();
             BaseballSolution solvedSolution = solver.solve(unsolvedSolution);
 
+
+            TreeMap<LocalDateTime, List<Match>> result = new TreeMap<>();
             for (Match match : solvedSolution.getMatchList()) {
-                logger.info("match : " + match.toString() + ", period : " + match.getCalendar().toString());
+                LocalDateTime localDateTime = match.getCalendar().getStartTime();
+                if (!result.containsKey(localDateTime)) {
+                    result.put(localDateTime, new ArrayList<>());
+                }
+                result.get(localDateTime).add(match);
             }
+
+
+            HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
+            for (LocalDateTime startTIme : result.keySet()) {
+                // visit order
+                for (Match match : result.get(startTIme)) {
+                    if (!visitOrderByTeam.containsKey(match.getHome())) {
+                        visitOrderByTeam.put(match.getHome(), new LinkedList<>());
+                    }
+                    visitOrderByTeam.get(match.getHome()).add(match.getHome());
+
+                    if (!visitOrderByTeam.containsKey(match.getAway())) {
+                        visitOrderByTeam.put(match.getAway(), new LinkedList<>());
+                    }
+                    visitOrderByTeam.get(match.getAway()).add(match.getHome());
+                }
+
+            }
+
+            for (Team team : visitOrderByTeam.keySet()) {
+                Queue<Team> visitOrder = visitOrderByTeam.get(team);
+                int visitOrderNo = 1;
+                BigDecimal totalDistance = BigDecimal.ZERO;
+                Team prevTeam = null;
+                for (Team visitTeam : visitOrder) {
+
+                    if (prevTeam != null) {
+                        totalDistance = totalDistance.add(prevTeam.getDistanceTo(visitTeam));
+//                        logger.info("   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
+//                                + prevTeam.getDistanceTo(visitTeam) +", totalDistance: " + totalDistance);
+
+                    }
+                    prevTeam = visitTeam;
+                    visitOrderNo++;
+
+
+                }
+                logger.info(team.getName() +"--> " + totalDistance);
+
+
+            }
+
+//            for (Map.Entry<LocalDateTime, List<Match>> entry : result.entrySet()) {
+//                logger.info(entry.getKey().toString());
+//                for (Match match : entry.getValue()) {
+//                    logger.info(match.toString());
+//                }
+//                logger.info("==========================================");
+//
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

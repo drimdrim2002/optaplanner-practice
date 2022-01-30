@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class Team extends AbstractPersistable {
     private String name;
     private String stadium;
-    private HashMap<String, BigDecimal> distanceTo;
+    private HashMap<String, BigDecimal> distanceMap;
 //    private HashMap<String, BigDecimal> distanceFrom;
 
     public Team() {
@@ -20,11 +20,11 @@ public class Team extends AbstractPersistable {
         this.stadium = stadium;
     }
 
-    public Team(long id, String name, String stadium, HashMap<String, BigDecimal> distanceTo) {
+    public Team(long id, String name, String stadium, HashMap<String, BigDecimal> distanceMap) {
         super(id);
         this.name = name;
         this.stadium = stadium;
-        this.distanceTo = distanceTo;
+        this.distanceMap = distanceMap;
 //        this.distanceFrom = distanceFrom;
     }
 
@@ -44,12 +44,16 @@ public class Team extends AbstractPersistable {
         this.stadium = stadium;
     }
 
-    public HashMap<String, BigDecimal> getDistanceTo() {
-        return distanceTo;
+    public HashMap<String, BigDecimal> getDistanceMap() {
+        return distanceMap;
     }
 
-    public void setDistanceTo(HashMap<String, BigDecimal> distanceTo) {
-        this.distanceTo = distanceTo;
+    public void setDistanceMap(HashMap<String, BigDecimal> distanceMap) {
+        this.distanceMap = distanceMap;
+    }
+
+    public BigDecimal getDistanceTo(Team team) {
+        return this.distanceMap.get(team.getName());
     }
 
 //    public HashMap<String, BigDecimal> getDistanceFrom() {

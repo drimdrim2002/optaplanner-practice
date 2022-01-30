@@ -9,7 +9,10 @@ import org.optaplanner.examples.baseball.domain.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BaseballEasyScoreCalculator implements EasyScoreCalculator<BaseballSolution, BendableLongScore> {
     private static final Logger logger = LoggerFactory.getLogger(BaseballEasyScoreCalculator.class);
@@ -57,12 +60,12 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 stadiumDuplicationCheck.add(match.getHome().getStadium());
 
                 // visit order
-                if(!visitOrderByTeam.containsKey(match.getHome())){
+                if (!visitOrderByTeam.containsKey(match.getHome())) {
                     visitOrderByTeam.put(match.getHome(), new LinkedList<>());
                 }
                 visitOrderByTeam.get(match.getHome()).add(match.getHome());
 
-                if(!visitOrderByTeam.containsKey(match.getAway())){
+                if (!visitOrderByTeam.containsKey(match.getAway())) {
                     visitOrderByTeam.put(match.getAway(), new LinkedList<>());
                 }
                 visitOrderByTeam.get(match.getAway()).add(match.getHome());
@@ -97,16 +100,38 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             }
         }
 
+        HashMap<String, BigDecimal> distanceByTeam = new HashMap<>();
         for (Map.Entry<Team, Queue<Team>> visitOrderEntry : visitOrderByTeam.entrySet()) {
             Team team = visitOrderEntry.getKey();
-            if (team.getName().equals("SSG")) {
-                Queue<Team> visitOrders = visitOrderEntry.getValue();
-                for (Team visitTeam : visitOrders) {
-                    logger.info(visitTeam.getName());
+            Queue<Team> visitOrders = visitOrderEntry.getValue();
+            Team prevTeam = null;
+            BigDecimal totalDistance = BigDecimal.ZERO;
+            for (Team visitTeam : visitOrders) {
+                if (prevTeam != null) {
+                    BigDecimal distance = prevTeam.getDistanceTo(visitTeam);
+                    totalDistance = totalDistance.add(distance);
                 }
+
+                prevTeam = visitTeam;
             }
+            distanceByTeam.put(team.getName(), totalDistance);
         }
 
+        BigDecimal sumDistance = BigDecimal.ZERO;
+        for (BigDecimal distance : distanceByTeam.values()) {
+            sumDistance = sumDistance.add(distance);
+        }
+        BigDecimal meanDistance = sumDistance.divide(BigDecimal.valueOf(10), RoundingMode.DOWN);
+
+        BigDecimal variance = BigDecimal.ZERO;
+        for (BigDecimal distance : distanceByTeam.values()) {
+            BigDecimal diff = distance.subtract(meanDistance);
+            diff = diff.divide(BigDecimal.valueOf(100), RoundingMode.DOWN);
+            variance  = variance.add(diff.pow(2));
+        }
+
+        double standardDeviation = Math.sqrt(variance.doubleValue());
+        soft1Score -= standardDeviation;
         return BendableLongScore.of(new long[]{hard0Score, hard1Score},
                 new long[]{soft0Score, soft1Score});
     }
