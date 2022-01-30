@@ -33,6 +33,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         TreeMap<Calendar, List<Match>> matchListByCalendar = getCalendarListTreeMap(baseballSolution);
 
         Set<Calendar> calendarSet = matchListByCalendar.keySet();
+        HashSet<String> prevMatch = new HashSet<>();
         for (Calendar calendar : calendarSet) {
 
             HashSet<String> teamDuplicationCheck = new HashSet<>();
@@ -41,22 +42,33 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             for (Match match : matchList) {
                 String homeTeam = match.getHome().getName();
                 String awayTeam = match.getAway().getName();
+                String matchDuplicationKey = homeTeam + awayTeam;
+                if (prevMatch.contains(matchDuplicationKey)) {
+                    hard1Score -= 1;
+                }
+
                 teamDuplicationCheck.add(homeTeam);
                 teamDuplicationCheck.add(awayTeam);
                 stadiumDuplicationCheck.add(match.getHome().getStadium());
+            }
+            prevMatch.clear();
+            for (Match match : matchList) {
+                String homeTeam = match.getHome().getName();
+                String awayTeam = match.getAway().getName();
+                prevMatch.add(homeTeam+ awayTeam);
             }
 
             if (teamDuplicationCheck.size() != 10) {
                 int min = Math.min(teamDuplicationCheck.size(), 10);
                 int max = Math.max(teamDuplicationCheck.size(), 10);
-                hard0Score -= (max-min);
+                hard0Score -= (max - min);
             }
 
 
             if (stadiumDuplicationCheck.size() != 5) {
                 int min = Math.min(stadiumDuplicationCheck.size(), 5);
                 int max = Math.max(stadiumDuplicationCheck.size(), 5);
-                hard0Score -= (max-min);
+                hard0Score -= (max - min);
             }
 
         }
