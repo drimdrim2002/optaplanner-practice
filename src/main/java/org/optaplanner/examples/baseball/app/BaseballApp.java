@@ -187,7 +187,6 @@ public class BaseballApp {
             Reader reader = new FileReader("data/baseball/input.json");
 //            Reader reader = new FileReader("../../../data/baseball/input.json");
             jsonObject = (JSONObject) parser.parse(reader);
-            logger.info(jsonObject.toString());
 
         } catch (Exception e) {
             e.printStackTrace();

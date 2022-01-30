@@ -5,10 +5,14 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.baseball.domain.BaseballSolution;
 import org.optaplanner.examples.baseball.domain.Calendar;
 import org.optaplanner.examples.baseball.domain.Match;
+import org.optaplanner.examples.baseball.domain.Team;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class BaseballEasyScoreCalculator implements EasyScoreCalculator<BaseballSolution, BendableLongScore> {
+    private static final Logger logger = LoggerFactory.getLogger(BaseballEasyScoreCalculator.class);
 
     // hard
     // 1. 하루에 팀이 중복되면 안된다.
@@ -34,6 +38,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         Set<Calendar> calendarSet = matchListByCalendar.keySet();
         HashSet<String> prevMatch = new HashSet<>();
+        HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
         for (Calendar calendar : calendarSet) {
 
             HashSet<String> teamDuplicationCheck = new HashSet<>();
@@ -50,6 +55,19 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 teamDuplicationCheck.add(homeTeam);
                 teamDuplicationCheck.add(awayTeam);
                 stadiumDuplicationCheck.add(match.getHome().getStadium());
+
+                // visit order
+                if(!visitOrderByTeam.containsKey(match.getHome())){
+                    visitOrderByTeam.put(match.getHome(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getHome()).add(match.getHome());
+
+                if(!visitOrderByTeam.containsKey(match.getAway())){
+                    visitOrderByTeam.put(match.getAway(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getAway()).add(match.getHome());
+
+
             }
             prevMatch.clear();
             for (Match match : matchList) {
@@ -74,8 +92,18 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         }
 
         for (Match match : baseballSolution.getMatchList()) {
-            if (match.getCalendar() == null || match.getCalendar().getId().equals(9999)) {
+            if (match.getCalendar() == null || match.getCalendar().getId().equals(9999L)) {
                 soft0Score -= 1;
+            }
+        }
+
+        for (Map.Entry<Team, Queue<Team>> visitOrderEntry : visitOrderByTeam.entrySet()) {
+            Team team = visitOrderEntry.getKey();
+            if (team.getName().equals("SSG")) {
+                Queue<Team> visitOrders = visitOrderEntry.getValue();
+                for (Team visitTeam : visitOrders) {
+                    logger.info(visitTeam.getName());
+                }
             }
         }
 
