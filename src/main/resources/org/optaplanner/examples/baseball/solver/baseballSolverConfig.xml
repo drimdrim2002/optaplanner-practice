@@ -35,11 +35,9 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <pillarChangeMoveSelector/>
-      <pillarSwapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
-      <entityTabuSize>7</entityTabuSize>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>1000</acceptedCountLimit>
