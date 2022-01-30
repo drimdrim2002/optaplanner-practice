@@ -37,73 +37,10 @@ public class BaseballApp {
             BaseballSolution unsolvedSolution = makeSolution(jsonObject);
 
             // initial 만들기
-
-            JSONArray initialPlanArray = (JSONArray) jsonObject.get("initialPlan");
-
-            HashMap<String, Queue<Match>> matchHashMap = new HashMap<>();
-
-            for (Match match : unsolvedSolution.getMatchList()) {
-                String home = match.getHome().getName();
-                String away = match.getAway().getName();
-                String consecutive = String.valueOf(match.getConsecutive());
-                String key = home + away + consecutive;
-                if (!matchHashMap.containsKey(key)) {
-                    matchHashMap.put(key, new LinkedList<>());
-                }
-                matchHashMap.get(key).add(match);
-            }
-
-            Set<String> matchesKeyIterate = matchHashMap.keySet();
-            for (String matchKey : matchesKeyIterate) {
-                if (matchKey.startsWith("SSG두산")) {
-                    logger.info("key: " + matchKey + ", value: " + matchHashMap.get(matchKey));
-                }
-            }
-
-
-            HashMap<LocalDateTime, Calendar> calendarHashMap = new HashMap<>();
-            for (Calendar calendar : unsolvedSolution.getCalendarList()) {
-                LocalDateTime startTIme = calendar.getStartTime();
-                calendarHashMap.put(startTIme, calendar);
-            }
-
-
-            int initialIndex = 0;
-            for (Object o : initialPlanArray) {
-
-
-                JSONObject initialPlanInfo = (JSONObject) o;
-                LocalDateTime datetime = LocalDateTime.parse((String) initialPlanInfo.get("datetime"), formatter);
-                String home = initialPlanInfo.get("home").toString();
-                String away = initialPlanInfo.get("away").toString();
-                String consecutive = String.valueOf(Math.round((double) initialPlanInfo.get("consecutive")));
-                String key = home + away + consecutive;
-
-
-                Match match = matchHashMap.get(key).poll();
-
-
-                Calendar calendar = calendarHashMap.get(datetime);
-
-
-                match.setCalendar(calendar);
-
-                if (initialIndex < 5) {
-                    match.setPinned(true);
-                }
-                initialIndex++;
-            }
-
-            for (Match match : unsolvedSolution.getMatchList()) {
-                if (match.getCalendar() == null) {
-                    logger.info(match.toString());
-                }
-            }
-
+            setinitialPlan(jsonObject, unsolvedSolution);
 
             SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource("org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
             Solver<BaseballSolution> solver = solverFactory.buildSolver();
-
             BaseballSolution solvedSolution = solver.solve(unsolvedSolution);
 
             for (Match match : solvedSolution.getMatchList()) {
@@ -116,6 +53,54 @@ public class BaseballApp {
         }
 
 
+    }
+
+    private static void setinitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
+        JSONArray initialPlanArray = (JSONArray) jsonObject.get("initialPlan");
+        HashMap<String, Queue<Match>> matchHashMap = new HashMap<>();
+        for (Match match : unsolvedSolution.getMatchList()) {
+            String home = match.getHome().getName();
+            String away = match.getAway().getName();
+            String consecutive = String.valueOf(match.getConsecutive());
+            String key = home + away + consecutive;
+            if (!matchHashMap.containsKey(key)) {
+                matchHashMap.put(key, new LinkedList<>());
+            }
+            matchHashMap.get(key).add(match);
+        }
+
+        HashMap<LocalDateTime, Calendar> calendarHashMap = new HashMap<>();
+        for (Calendar calendar : unsolvedSolution.getCalendarList()) {
+            LocalDateTime startTIme = calendar.getStartTime();
+            calendarHashMap.put(startTIme, calendar);
+        }
+
+
+        int initialIndex = 0;
+        for (Object o : initialPlanArray) {
+
+
+            JSONObject initialPlanInfo = (JSONObject) o;
+            LocalDateTime datetime = LocalDateTime.parse((String) initialPlanInfo.get("datetime"), formatter);
+            String home = initialPlanInfo.get("home").toString();
+            String away = initialPlanInfo.get("away").toString();
+            String consecutive = String.valueOf(Math.round((double) initialPlanInfo.get("consecutive")));
+            String key = home + away + consecutive;
+
+
+            Match match = matchHashMap.get(key).poll();
+
+
+            Calendar calendar = calendarHashMap.get(datetime);
+
+
+            match.setCalendar(calendar);
+
+            if (initialIndex < 5) {
+                match.setPinned(true);
+            }
+            initialIndex++;
+        }
     }
 
     private static BaseballSolution makeSolution(JSONObject jsonObject) {
@@ -175,6 +160,11 @@ public class BaseballApp {
             calendarList.add(period);
             prev = period;
         }
+
+
+        LocalDateTime lastDate = LocalDateTime.parse((String) "2022-12-31 00:00:00", formatter);
+        Calendar dummy = new Calendar(9999, lastDate, 0, false, false);
+        calendarList.add(dummy);
 
         for (Calendar period : calendarList) {
             if (period.getPrev() != null) {

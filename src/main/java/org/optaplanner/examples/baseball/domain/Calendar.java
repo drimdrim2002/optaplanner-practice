@@ -4,7 +4,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import java.time.LocalDateTime;
 
-public class Calendar extends AbstractPersistable {
+public class Calendar extends AbstractPersistable implements Comparable<Calendar> {
 
     private LocalDateTime startTime;
     private Calendar next;
@@ -77,5 +77,17 @@ public class Calendar extends AbstractPersistable {
                 ", weekend=" + weekend +
                 ", holiday=" + holiday +
                 '}';
+    }
+
+
+    @Override
+    public int compareTo(Calendar o) {
+
+        if (this.startTime.isEqual(o.startTime)) {
+            return this.id.compareTo(o.id);
+        } else {
+            return this.startTime.compareTo(o.startTime);
+        }
+
     }
 }

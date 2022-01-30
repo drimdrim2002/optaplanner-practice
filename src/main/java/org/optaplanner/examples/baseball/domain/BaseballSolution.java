@@ -5,7 +5,7 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class BaseballSolution extends AbstractPersistable {
 
     private List<Match> matchList;
     private  List<Calendar> calendarList;
-    private HardSoftScore hardSoftLongScore;
+    private BendableLongScore bendableLongScore;
 
     @PlanningEntityCollectionProperty
     public List<Match> getMatchList() {
@@ -36,12 +36,12 @@ public class BaseballSolution extends AbstractPersistable {
         this.calendarList = calendarList;
     }
 
-    @PlanningScore
-    public HardSoftScore getHardSoftLongScore() {
-        return hardSoftLongScore;
+    @PlanningScore(bendableHardLevelsSize = 2, bendableSoftLevelsSize = 2)
+    public BendableLongScore getBendableLongScore() {
+        return bendableLongScore;
     }
 
-    public void setHardSoftLongScore(HardSoftScore hardSoftLongScore) {
-        this.hardSoftLongScore = hardSoftLongScore;
+    public void setBendableLongScore(BendableLongScore bendableLongScore) {
+        this.bendableLongScore = bendableLongScore;
     }
 }
