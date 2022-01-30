@@ -55,7 +55,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             for (Match match : matchList) {
                 String homeTeam = match.getHome().getName();
                 String awayTeam = match.getAway().getName();
-                prevMatch.add(homeTeam+ awayTeam);
+                prevMatch.add(homeTeam + awayTeam);
             }
 
             if (teamDuplicationCheck.size() != 10) {
@@ -71,6 +71,12 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 hard0Score -= (max - min);
             }
 
+        }
+
+        for (Match match : baseballSolution.getMatchList()) {
+            if (match.getCalendar() == null || match.getCalendar().getId().equals(9999)) {
+                soft0Score -= 1;
+            }
         }
 
         return BendableLongScore.of(new long[]{hard0Score, hard1Score},
