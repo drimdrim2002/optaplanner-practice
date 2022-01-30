@@ -14,13 +14,13 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         for (Match match : baseballSolution.getMatchList()) {
 
-            if (match.getPeriod() == null) {
+            if (match.getCalendar() == null) {
                 shortPenalty -= match.getConsecutive();
                 continue;
             }
 
             // 경기수와 period는 일치해야 한다
-            if (match.getConsecutive() != match.getPeriod().getConsecutive()) {
+            if (match.getConsecutive() != match.getCalendar().getConsecutive()) {
                 hardScore -= 1;
             }
 

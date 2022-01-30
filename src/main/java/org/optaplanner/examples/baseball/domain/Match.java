@@ -64,11 +64,11 @@ public class Match extends AbstractPersistable {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"calendarRange"})
-    public Calendar getPeriod() {
+    public Calendar getCalendar() {
         return calendar;
     }
 
-    public void setPeriod(Calendar calendar) {
+    public void setCalendar(Calendar calendar) {
         this.calendar = calendar;
     }
 
