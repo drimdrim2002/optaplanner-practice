@@ -26,10 +26,9 @@ public class BaseballApp {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) {
-        // 데이터 읽기
-
 
         try {
+            // 데이터 읽기
             JSONObject jsonObject = readJsonFile();
 
 
@@ -39,60 +38,13 @@ public class BaseballApp {
             // initial 만들기
             setinitialPlan(jsonObject, unsolvedSolution);
 
+            // solving
             SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource("org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
             Solver<BaseballSolution> solver = solverFactory.buildSolver();
             BaseballSolution solvedSolution = solver.solve(unsolvedSolution);
 
-
-            TreeMap<LocalDateTime, List<Match>> result = new TreeMap<>();
-            for (Match match : solvedSolution.getMatchList()) {
-                LocalDateTime localDateTime = match.getCalendar().getStartTime();
-                if (!result.containsKey(localDateTime)) {
-                    result.put(localDateTime, new ArrayList<>());
-                }
-                result.get(localDateTime).add(match);
-            }
-
-
-            HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
-            for (LocalDateTime startTIme : result.keySet()) {
-                // visit order
-                for (Match match : result.get(startTIme)) {
-                    if (!visitOrderByTeam.containsKey(match.getHome())) {
-                        visitOrderByTeam.put(match.getHome(), new LinkedList<>());
-                    }
-                    visitOrderByTeam.get(match.getHome()).add(match.getHome());
-
-                    if (!visitOrderByTeam.containsKey(match.getAway())) {
-                        visitOrderByTeam.put(match.getAway(), new LinkedList<>());
-                    }
-                    visitOrderByTeam.get(match.getAway()).add(match.getHome());
-                }
-
-            }
-
-            for (Team team : visitOrderByTeam.keySet()) {
-                Queue<Team> visitOrder = visitOrderByTeam.get(team);
-                int visitOrderNo = 1;
-                BigDecimal totalDistance = BigDecimal.ZERO;
-                Team prevTeam = null;
-                for (Team visitTeam : visitOrder) {
-
-                    if (prevTeam != null) {
-                        totalDistance = totalDistance.add(prevTeam.getDistanceTo(visitTeam));
-//                        logger.info("   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
-//                                + prevTeam.getDistanceTo(visitTeam) +", totalDistance: " + totalDistance);
-
-                    }
-                    prevTeam = visitTeam;
-                    visitOrderNo++;
-
-
-                }
-                logger.info(team.getName() +"--> " + totalDistance);
-
-
-            }
+            // export result
+            exportResult(solvedSolution);
 
 //            for (Map.Entry<LocalDateTime, List<Match>> entry : result.entrySet()) {
 //                logger.info(entry.getKey().toString());
@@ -109,6 +61,65 @@ public class BaseballApp {
         }
 
 
+    }
+
+    private static void exportResult(BaseballSolution solvedSolution) {
+
+        TreeMap<LocalDateTime, List<Match>> matchResultByTime = new TreeMap<>();
+        for (Match match : solvedSolution.getMatchList()) {
+            LocalDateTime localDateTime = match.getCalendar().getStartTime();
+            if (!matchResultByTime.containsKey(localDateTime)) {
+                matchResultByTime.put(localDateTime, new ArrayList<>());
+            }
+            matchResultByTime.get(localDateTime).add(match);
+        }
+
+        logger.info("==================== schedule result ====================");
+        for (LocalDateTime startTime : matchResultByTime.keySet()) {
+            logger.info("time: " + startTime);
+            for (Match match : matchResultByTime.get(startTime)) {
+                logger.info(match.toString());
+            }
+        }
+
+
+        HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
+        for (LocalDateTime startTIme : matchResultByTime.keySet()) {
+            for (Match match : matchResultByTime.get(startTIme)) {
+                if (!visitOrderByTeam.containsKey(match.getHome())) {
+                    visitOrderByTeam.put(match.getHome(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getHome()).add(match.getHome());
+                if (!visitOrderByTeam.containsKey(match.getAway())) {
+                    visitOrderByTeam.put(match.getAway(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getAway()).add(match.getHome());
+            }
+
+        }
+
+        for (Team team : visitOrderByTeam.keySet()) {
+            Queue<Team> visitOrder = visitOrderByTeam.get(team);
+            int visitOrderNo = 1;
+            BigDecimal totalDistance = BigDecimal.ZERO;
+            Team prevTeam = null;
+            StringBuilder sb = new StringBuilder();
+            for (Team visitTeam : visitOrder) {
+                if (prevTeam != null) {
+                    totalDistance = totalDistance.add(prevTeam.getDistanceTo(visitTeam));
+                    sb.append("   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
+                            + prevTeam.getDistanceTo(visitTeam) + ", totalDistance: " + totalDistance + "\n");
+
+                } else {
+                    sb.append("\n   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
+                            + 0 + ", totalDistance: " + 0 + "\n");
+                }
+                prevTeam = visitTeam;
+                visitOrderNo++;
+            }
+            logger.info(team.getName() + "--> " + totalDistance);
+            logger.info(sb.toString());
+        }
     }
 
     private static void setinitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
