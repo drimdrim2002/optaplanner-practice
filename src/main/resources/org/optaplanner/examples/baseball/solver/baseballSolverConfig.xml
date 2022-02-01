@@ -2,6 +2,7 @@
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
+  <environmentMode>REPRODUCIBLE</environmentMode>
   <randomSeed>0</randomSeed>
   <moveThreadCount>8</moveThreadCount>
   <!-- To solve faster by saturating multiple CPU cores -->
@@ -26,7 +27,7 @@
   <!-- Optimization algorithms configuration -->
   <termination>
     <minutesSpentLimit>2</minutesSpentLimit>
-    <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+    <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
   </termination>
 
   <!-- Power tweaked optimization algorithms configuration -->
@@ -37,6 +38,8 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
+      <pillarChangeMoveSelector/>
+      <pillarSwapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>1000</lateAcceptanceSize>
