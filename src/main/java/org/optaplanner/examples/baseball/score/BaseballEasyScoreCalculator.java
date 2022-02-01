@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BaseballEasyScoreCalculator implements EasyScoreCalculator<BaseballSolution, BendableLongScore> {
     private static final Logger logger = LoggerFactory.getLogger(BaseballEasyScoreCalculator.class);
@@ -31,17 +30,19 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
     @Override
     public BendableLongScore calculateScore(BaseballSolution baseballSolution) {
 
-        int hard0Score = 0;
-        int hard1Score = 0;
+        int duplicationHardScore = 0;
+        int successiveHardScore = 0;
 
-        int soft0Score = 0;
-        int soft1Score = 0;
+        int minimizeShortScore = 0;
+        int stabilizeDistanceScore = 0;
+        int stabilizeHolidayScore = 0;
 
         TreeMap<Calendar, List<Match>> matchListByCalendar = getCalendarListTreeMap(baseballSolution);
 
         Set<Calendar> calendarSet = matchListByCalendar.keySet();
         HashSet<String> prevMatch = new HashSet<>();
         HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
+
         for (Calendar calendar : calendarSet) {
 
             HashSet<String> teamDuplicationCheck = new HashSet<>();
@@ -52,7 +53,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 String awayTeam = match.getAway().getName();
                 String matchDuplicationKey = homeTeam + awayTeam;
                 if (prevMatch.contains(matchDuplicationKey)) {
-                    hard1Score -= 1;
+                    successiveHardScore -= 1;
                 }
 
                 teamDuplicationCheck.add(homeTeam);
@@ -82,21 +83,28 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             if (teamDuplicationCheck.size() != 10) {
                 int min = Math.min(teamDuplicationCheck.size(), 10);
                 int max = Math.max(teamDuplicationCheck.size(), 10);
-                hard0Score -= (max - min);
+                duplicationHardScore -= (max - min);
             }
 
 
             if (stadiumDuplicationCheck.size() != 5) {
                 int min = Math.min(stadiumDuplicationCheck.size(), 5);
                 int max = Math.max(stadiumDuplicationCheck.size(), 5);
-                hard0Score -= (max - min);
+                duplicationHardScore -= (max - min);
             }
 
         }
-
+        HashMap<Team, Integer> holidayByTeam = new HashMap<>();
         for (Match match : baseballSolution.getMatchList()) {
             if (match.getCalendar() == null || match.getCalendar().getId().equals(9999L)) {
-                soft0Score -= 1;
+                minimizeShortScore -= 1;
+                continue;
+            }
+
+
+            if (match.getCalendar().isHoliday() || match.getCalendar().isWeekend()) {
+                int prevQty = holidayByTeam.getOrDefault(match.getHome(), 0);
+                holidayByTeam.put(match.getHome(), prevQty + 1);
             }
         }
 
@@ -123,17 +131,34 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         }
         BigDecimal meanDistance = sumDistance.divide(BigDecimal.valueOf(10), RoundingMode.DOWN);
 
-        BigDecimal variance = BigDecimal.ZERO;
+        BigDecimal distanceVariance = BigDecimal.ZERO;
         for (BigDecimal distance : distanceByTeam.values()) {
             BigDecimal diff = distance.subtract(meanDistance);
             diff = diff.divide(BigDecimal.valueOf(100), RoundingMode.DOWN);
-            variance  = variance.add(diff.pow(2));
+            distanceVariance = distanceVariance.add(diff.pow(2));
+        }
+        stabilizeDistanceScore -= distanceVariance.intValue();
+
+
+        double meanHolidayCount = 0.0;
+        for (Team team : holidayByTeam.keySet()) {
+            int holidayCnt = holidayByTeam.get(team);
+            meanHolidayCount += holidayCnt;
+        }
+        meanHolidayCount /= 10;
+
+        double holidayVariance = 0;
+        for (Team team : holidayByTeam.keySet()) {
+            int holidayCnt = holidayByTeam.get(team);
+            double diff = Math.pow(Math.abs(holidayCnt - meanHolidayCount), 2);
+            holidayVariance += diff;
         }
 
-        double standardDeviation = Math.sqrt(variance.doubleValue());
-        soft1Score -= standardDeviation;
-        return BendableLongScore.of(new long[]{hard0Score, hard1Score},
-                new long[]{soft0Score, soft1Score});
+        stabilizeHolidayScore -= holidayVariance;
+        return BendableLongScore.of(new long[]{duplicationHardScore, successiveHardScore},
+                new long[]{minimizeShortScore,  stabilizeHolidayScore, stabilizeDistanceScore});
+
+
     }
 
     private TreeMap<Calendar, List<Match>> getCalendarListTreeMap(BaseballSolution baseballSolution) {
