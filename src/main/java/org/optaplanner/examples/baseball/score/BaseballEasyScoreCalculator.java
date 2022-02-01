@@ -134,7 +134,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         BigDecimal distanceVariance = BigDecimal.ZERO;
         for (BigDecimal distance : distanceByTeam.values()) {
             BigDecimal diff = distance.subtract(meanDistance);
-            diff = diff.divide(BigDecimal.valueOf(100), RoundingMode.DOWN);
+            diff = diff.divide(BigDecimal.valueOf(10), RoundingMode.DOWN);
             distanceVariance = distanceVariance.add(diff.pow(2));
         }
         stabilizeDistanceScore -= distanceVariance.intValue();
@@ -156,7 +156,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         stabilizeHolidayScore -= holidayVariance;
         return BendableLongScore.of(new long[]{duplicationHardScore, successiveHardScore},
-                new long[]{minimizeShortScore,  stabilizeHolidayScore, stabilizeDistanceScore});
+                new long[]{minimizeShortScore, stabilizeHolidayScore, stabilizeDistanceScore});
 
 
     }
