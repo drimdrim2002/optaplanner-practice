@@ -46,15 +46,6 @@ public class BaseballApp {
             // export result
             exportResult(solvedSolution);
 
-//            for (Map.Entry<LocalDateTime, List<Match>> entry : result.entrySet()) {
-//                logger.info(entry.getKey().toString());
-//                for (Match match : entry.getValue()) {
-//                    logger.info(match.toString());
-//                }
-//                logger.info("==========================================");
-//
-//            }
-
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -97,7 +88,7 @@ public class BaseballApp {
             }
 
         }
-
+        logger.info("========== distance stabilization ==========");
         for (Team team : visitOrderByTeam.keySet()) {
             Queue<Team> visitOrder = visitOrderByTeam.get(team);
             int visitOrderNo = 1;
@@ -118,8 +109,26 @@ public class BaseballApp {
                 visitOrderNo++;
             }
             logger.info(team.getName() + "--> " + totalDistance);
-            logger.info(sb.toString());
+//            logger.info(sb.toString());
         }
+
+        HashMap<String, Integer> holidayByTeam = new HashMap<>();
+        for (Match match : solvedSolution.getMatchList()) {
+            Team homeTeam = match.getHome();
+            Calendar calendar = match.getCalendar();
+            boolean holiday = (calendar.isHoliday() || calendar.isWeekend()) ? true : false;
+            if (holiday) {
+                int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
+                holidayByTeam.put(homeTeam.getName(), prevQty + 1);
+            }
+        }
+
+        logger.info("========== holiday stabilization ==========");
+        for (String homeTeam : holidayByTeam.keySet()) {
+            logger.info("  team: " + homeTeam + ", home match in holiday: " + holidayByTeam.getOrDefault(homeTeam, 0));
+        }
+
+
     }
 
     private static void setinitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
