@@ -1,5 +1,9 @@
 package org.optaplanner.examples.baseball.app;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,8 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.ValidationException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +39,7 @@ public class BaseballApp {
             BaseballSolution unsolvedSolution = makeSolution(jsonObject);
 
             // initial 만들기
-            setinitialPlan(jsonObject, unsolvedSolution);
+            setInitialPlan(jsonObject, unsolvedSolution);
 
             // solving
             SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource("org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
@@ -56,6 +59,35 @@ public class BaseballApp {
 
     private static void exportResult(BaseballSolution solvedSolution) {
 
+        // 워크북 생성
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        // 워크시트 생성
+        XSSFSheet scheduleSheet = workbook.createSheet("schedule");
+        // 행 생성
+        XSSFRow row = scheduleSheet.createRow(0);
+        // 쎌 생성
+        XSSFCell cell;
+
+        // 헤더 정보 구성
+        cell = row.createCell(0);
+        cell.setCellValue("date");
+
+        cell = row.createCell(1);
+        cell.setCellValue("home");
+
+        cell = row.createCell(2);
+        cell.setCellValue("away");
+
+        cell = row.createCell(3);
+        cell.setCellValue("stadium");
+
+        cell = row.createCell(4);
+        cell.setCellValue("matches");
+
+        cell = row.createCell(5);
+        cell.setCellValue("holiday");
+
+
         TreeMap<LocalDateTime, List<Match>> matchResultByTime = new TreeMap<>();
         for (Match match : solvedSolution.getMatchList()) {
             LocalDateTime localDateTime = match.getCalendar().getStartTime();
@@ -65,11 +97,57 @@ public class BaseballApp {
             matchResultByTime.get(localDateTime).add(match);
         }
 
-        logger.info("==================== schedule result ====================");
+//        logger.info("==================== schedule result ====================");
+        int rowIndex = 1;
         for (LocalDateTime startTime : matchResultByTime.keySet()) {
-            logger.info("time: " + startTime);
+//            logger.info("time: " + startTime);
+
+
             for (Match match : matchResultByTime.get(startTime)) {
-                logger.info(match.toString());
+                row = scheduleSheet.createRow(rowIndex);
+                cell = row.createCell(0);
+                cell.setCellValue(startTime.toLocalDate().toString());
+
+//                logger.info(match.toString());
+                cell = row.createCell(1);
+                cell.setCellValue(match.getHome().getName());
+
+                cell = row.createCell(2);
+                cell.setCellValue(match.getAway().getName());
+
+                cell = row.createCell(3);
+                cell.setCellValue(match.getHome().getStadium());
+
+                cell = row.createCell(4);
+                cell.setCellValue(match.getConsecutive());
+
+                cell = row.createCell(5);
+                boolean holiday = match.getCalendar().isHoliday() || match.getCalendar().isWeekend() ? true : false;
+                cell.setCellValue(holiday == true ? 1 : 0);
+
+                rowIndex++;
+            }
+        }
+
+        long currentMilliseconds = System.currentTimeMillis();
+        String fileName = "output_" + String.valueOf(currentMilliseconds).substring(0, 6);
+        File file = new File("data/baseball/solved/" +  fileName + ".xlsx");
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            workbook.write(fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (workbook != null) workbook.close();
+                if (fos != null) fos.close();
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
 
@@ -88,7 +166,7 @@ public class BaseballApp {
             }
 
         }
-        logger.info("========== distance stabilization ==========");
+        logger.info("==================== distance stabilization ====================");
         for (Team team : visitOrderByTeam.keySet()) {
             Queue<Team> visitOrder = visitOrderByTeam.get(team);
             int visitOrderNo = 1;
@@ -123,7 +201,7 @@ public class BaseballApp {
             }
         }
 
-        logger.info("========== holiday stabilization ==========");
+        logger.info("==================== holiday stabilization ====================");
         for (String homeTeam : holidayByTeam.keySet()) {
             logger.info("  team: " + homeTeam + ", home match in holiday: " + holidayByTeam.getOrDefault(homeTeam, 0));
         }
@@ -131,7 +209,7 @@ public class BaseballApp {
 
     }
 
-    private static void setinitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
+    private static void setInitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
         JSONArray initialPlanArray = (JSONArray) jsonObject.get("initialPlan");
         HashMap<String, Queue<Match>> matchHashMap = new HashMap<>();
         for (Match match : unsolvedSolution.getMatchList()) {
