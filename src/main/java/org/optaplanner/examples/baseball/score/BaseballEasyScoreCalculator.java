@@ -86,10 +86,15 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 duplicationHardScore -= (max - min);
             }
 
-
             if (stadiumDuplicationCheck.size() != 5) {
                 int min = Math.min(stadiumDuplicationCheck.size(), 5);
                 int max = Math.max(stadiumDuplicationCheck.size(), 5);
+                duplicationHardScore -= (max - min);
+            }
+
+            if (matchList.size() != 5) {
+                int min = Math.min(matchList.size(), 5);
+                int max = Math.max(matchList.size(), 5);
                 duplicationHardScore -= (max - min);
             }
 
