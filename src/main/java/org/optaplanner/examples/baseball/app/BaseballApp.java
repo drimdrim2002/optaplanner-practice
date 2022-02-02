@@ -77,7 +77,8 @@ public class BaseballApp {
 
     private static void createExcelFile(String status, XSSFWorkbook workbook) {
         long currentMilliseconds = System.currentTimeMillis();
-        String fileName = status + "_" + String.valueOf(currentMilliseconds).substring(0, 6);
+        String fileName = status + "_" + String.valueOf(currentMilliseconds).substring(0, 10);
+        logger.info("fileName: "+ fileName);
         File file = new File("data/baseball/" + status + "/" + fileName + ".xlsx");
         FileOutputStream fos = null;
         try {
@@ -203,7 +204,6 @@ public class BaseballApp {
             Queue<Match> visitOrder = visitOrderByTeam.get(team);
             BigDecimal totalDistance = BigDecimal.ZERO;
             Team prevTeam = null;
-            StringBuilder sb = new StringBuilder();
             for (Match match : visitOrder) {
 
                 BigDecimal distanceFromPrevTeam = BigDecimal.ZERO;
@@ -236,6 +236,7 @@ public class BaseballApp {
 
                 cell = row.createCell(4);
                 cell.setCellValue(totalDistance.doubleValue());
+
                 rowIndex++;
             }
         }
