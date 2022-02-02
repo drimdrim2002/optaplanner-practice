@@ -41,13 +41,16 @@ public class BaseballApp {
             // initial 만들기
             setInitialPlan(jsonObject, unsolvedSolution);
 
+            exportResult(unsolvedSolution, false);
+
+
             // solving
             SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource("org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
             Solver<BaseballSolution> solver = solverFactory.buildSolver();
             BaseballSolution solvedSolution = solver.solve(unsolvedSolution);
 
             // export result
-            exportResult(solvedSolution);
+            exportResult(solvedSolution, true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,8 +60,106 @@ public class BaseballApp {
 
     }
 
-    private static void exportResult(BaseballSolution solvedSolution) {
+    private static void exportResult(BaseballSolution solvedSolution, boolean solved) {
 
+        TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime = new TreeMap<>();
+        for (Match match : solvedSolution.getMatchList()) {
+            LocalDateTime localDateTime = match.getCalendar().getStartTime();
+            if (!matchResultsOrderByTime.containsKey(localDateTime)) {
+                matchResultsOrderByTime.put(localDateTime, new ArrayList<>());
+            }
+            matchResultsOrderByTime.get(localDateTime).add(match);
+        }
+
+        String status = solved ? "solved" : "unsolved";
+
+        exportExcelFile(matchResultsOrderByTime, status);
+
+        HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
+        for (LocalDateTime startTIme : matchResultsOrderByTime.keySet()) {
+            for (Match match : matchResultsOrderByTime.get(startTIme)) {
+                if (!visitOrderByTeam.containsKey(match.getHome())) {
+                    visitOrderByTeam.put(match.getHome(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getHome()).add(match.getHome());
+                if (!visitOrderByTeam.containsKey(match.getAway())) {
+                    visitOrderByTeam.put(match.getAway(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getAway()).add(match.getHome());
+            }
+
+        }
+
+        logger.info("==================== " + status + " distance stabilization ====================");
+        for (Team team : visitOrderByTeam.keySet()) {
+            Queue<Team> visitOrder = visitOrderByTeam.get(team);
+            int visitOrderNo = 1;
+            BigDecimal totalDistance = BigDecimal.ZERO;
+            Team prevTeam = null;
+            StringBuilder sb = new StringBuilder();
+            for (Team visitTeam : visitOrder) {
+                if (prevTeam != null) {
+                    totalDistance = totalDistance.add(prevTeam.getDistanceTo(visitTeam));
+                    sb.append("   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
+                            + prevTeam.getDistanceTo(visitTeam) + ", totalDistance: " + totalDistance + "\n");
+
+                } else {
+                    sb.append("\n   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
+                            + 0 + ", totalDistance: " + 0 + "\n");
+                }
+                prevTeam = visitTeam;
+                visitOrderNo++;
+            }
+            logger.info("team: " + team.getName() + ", total distance: " + totalDistance);
+            logger.info(sb.toString());
+        }
+
+        HashMap<String, Integer> holidayByTeam = new HashMap<>();
+        for (Match match : solvedSolution.getMatchList()) {
+            Team homeTeam = match.getHome();
+            Calendar calendar = match.getCalendar();
+            boolean holiday = (calendar.isHoliday() || calendar.isWeekend()) ? true : false;
+            if (holiday) {
+                int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
+                holidayByTeam.put(homeTeam.getName(), prevQty + 1);
+            }
+        }
+
+        logger.info("==================== holiday stabilization ====================");
+        for (String homeTeam : holidayByTeam.keySet()) {
+            logger.info("  team: " + homeTeam + ", home match in holiday: " + holidayByTeam.getOrDefault(homeTeam, 0));
+        }
+
+
+    }
+
+    private static void exportExcelFile(TreeMap<LocalDateTime, List<Match>> matchResultByTime, String status) {
+        XSSFWorkbook workbook = createWorkBook(matchResultByTime);
+
+        long currentMilliseconds = System.currentTimeMillis();
+        String fileName = status + "_" + String.valueOf(currentMilliseconds).substring(0, 6);
+        File file = new File("data/baseball/" + status + "/" + fileName + ".xlsx");
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            workbook.write(fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (workbook != null) workbook.close();
+                if (fos != null) fos.close();
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static XSSFWorkbook createWorkBook(TreeMap<LocalDateTime, List<Match>> matchResultByTime) {
         // 워크북 생성
         XSSFWorkbook workbook = new XSSFWorkbook();
         // 워크시트 생성
@@ -87,22 +188,8 @@ public class BaseballApp {
         cell = row.createCell(5);
         cell.setCellValue("holiday");
 
-
-        TreeMap<LocalDateTime, List<Match>> matchResultByTime = new TreeMap<>();
-        for (Match match : solvedSolution.getMatchList()) {
-            LocalDateTime localDateTime = match.getCalendar().getStartTime();
-            if (!matchResultByTime.containsKey(localDateTime)) {
-                matchResultByTime.put(localDateTime, new ArrayList<>());
-            }
-            matchResultByTime.get(localDateTime).add(match);
-        }
-
-//        logger.info("==================== schedule result ====================");
         int rowIndex = 1;
         for (LocalDateTime startTime : matchResultByTime.keySet()) {
-//            logger.info("time: " + startTime);
-
-
             for (Match match : matchResultByTime.get(startTime)) {
                 row = scheduleSheet.createRow(rowIndex);
                 cell = row.createCell(0);
@@ -128,85 +215,7 @@ public class BaseballApp {
                 rowIndex++;
             }
         }
-
-        long currentMilliseconds = System.currentTimeMillis();
-        String fileName = "output_" + String.valueOf(currentMilliseconds).substring(0, 6);
-        File file = new File("data/baseball/solved/" +  fileName + ".xlsx");
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            workbook.write(fos);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (workbook != null) workbook.close();
-                if (fos != null) fos.close();
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-
-        HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
-        for (LocalDateTime startTIme : matchResultByTime.keySet()) {
-            for (Match match : matchResultByTime.get(startTIme)) {
-                if (!visitOrderByTeam.containsKey(match.getHome())) {
-                    visitOrderByTeam.put(match.getHome(), new LinkedList<>());
-                }
-                visitOrderByTeam.get(match.getHome()).add(match.getHome());
-                if (!visitOrderByTeam.containsKey(match.getAway())) {
-                    visitOrderByTeam.put(match.getAway(), new LinkedList<>());
-                }
-                visitOrderByTeam.get(match.getAway()).add(match.getHome());
-            }
-
-        }
-        logger.info("==================== distance stabilization ====================");
-        for (Team team : visitOrderByTeam.keySet()) {
-            Queue<Team> visitOrder = visitOrderByTeam.get(team);
-            int visitOrderNo = 1;
-            BigDecimal totalDistance = BigDecimal.ZERO;
-            Team prevTeam = null;
-            StringBuilder sb = new StringBuilder();
-            for (Team visitTeam : visitOrder) {
-                if (prevTeam != null) {
-                    totalDistance = totalDistance.add(prevTeam.getDistanceTo(visitTeam));
-                    sb.append("   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
-                            + prevTeam.getDistanceTo(visitTeam) + ", totalDistance: " + totalDistance + "\n");
-
-                } else {
-                    sb.append("\n   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
-                            + 0 + ", totalDistance: " + 0 + "\n");
-                }
-                prevTeam = visitTeam;
-                visitOrderNo++;
-            }
-            logger.info(team.getName() + "--> " + totalDistance);
-//            logger.info(sb.toString());
-        }
-
-        HashMap<String, Integer> holidayByTeam = new HashMap<>();
-        for (Match match : solvedSolution.getMatchList()) {
-            Team homeTeam = match.getHome();
-            Calendar calendar = match.getCalendar();
-            boolean holiday = (calendar.isHoliday() || calendar.isWeekend()) ? true : false;
-            if (holiday) {
-                int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
-                holidayByTeam.put(homeTeam.getName(), prevQty + 1);
-            }
-        }
-
-        logger.info("==================== holiday stabilization ====================");
-        for (String homeTeam : holidayByTeam.keySet()) {
-            logger.info("  team: " + homeTeam + ", home match in holiday: " + holidayByTeam.getOrDefault(homeTeam, 0));
-        }
-
-
+        return workbook;
     }
 
     private static void setInitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
