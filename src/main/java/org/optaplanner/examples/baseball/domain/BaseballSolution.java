@@ -36,7 +36,7 @@ public class BaseballSolution extends AbstractPersistable {
         this.calendarList = calendarList;
     }
 
-    @PlanningScore(bendableHardLevelsSize = 2, bendableSoftLevelsSize = 3)
+    @PlanningScore(bendableHardLevelsSize = 2, bendableSoftLevelsSize = 4)
     public BendableLongScore getBendableLongScore() {
         return bendableLongScore;
     }

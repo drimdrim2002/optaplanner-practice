@@ -23,10 +23,9 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
     // soft
     // 1. match 중 calendar가 null이거나 dummy 인 것을 최소화한다.
-    // 2. 팀별 이동 거리를 평준화한다.
-    // 3. 휴일 평준화
-    // 4. 주말 평준화
-
+    // 2. 휴일 및 주말 평준화
+    // 3. home/away 가 연속 3일 허용
+    // 4. 거리 평준화
     @Override
     public BendableLongScore calculateScore(BaseballSolution baseballSolution) {
 
@@ -36,6 +35,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         int minimizeShortScore = 0;
         int stabilizeDistanceScore = 0;
         int stabilizeHolidayScore = 0;
+        int stadiumContinuousScore = 0;
 
         TreeMap<Calendar, List<Match>> matchListByCalendar = getCalendarListTreeMap(baseballSolution);
 
@@ -101,7 +101,6 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 continue;
             }
 
-
             if (match.getCalendar().isHoliday() || match.getCalendar().isWeekend()) {
                 int prevQty = holidayByTeam.getOrDefault(match.getHome(), 0);
                 holidayByTeam.put(match.getHome(), prevQty + 1);
@@ -114,13 +113,29 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             Queue<Team> visitOrders = visitOrderEntry.getValue();
             Team prevTeam = null;
             BigDecimal totalDistance = BigDecimal.ZERO;
+
+            int consecutive = 1;
+            boolean prevIsHome = true; //초반에 무엇이 되어도 상관 없다.
             for (Team visitTeam : visitOrders) {
+                boolean isHome = team.equals(visitTeam);
                 if (prevTeam != null) {
                     BigDecimal distance = prevTeam.getDistanceTo(visitTeam);
                     totalDistance = totalDistance.add(distance);
-                }
 
+                    if (isHome == prevIsHome) {
+                        consecutive++;
+                    } else {
+                        consecutive = 1;
+                    }
+
+                    if (consecutive > 3) {
+                        stadiumContinuousScore -= 1;
+                    }
+                }
+                prevIsHome = isHome;
                 prevTeam = visitTeam;
+
+
             }
             distanceByTeam.put(team.getName(), totalDistance);
         }
@@ -156,7 +171,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         stabilizeHolidayScore -= holidayVariance;
         return BendableLongScore.of(new long[]{duplicationHardScore, successiveHardScore},
-                new long[]{minimizeShortScore, stabilizeHolidayScore, stabilizeDistanceScore});
+                new long[]{minimizeShortScore, stabilizeHolidayScore, stadiumContinuousScore, stabilizeDistanceScore});
 
 
     }
