@@ -60,82 +60,22 @@ public class BaseballApp {
 
     }
 
-    private static void exportResult(BaseballSolution solvedSolution, boolean solved) {
-
-        TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime = new TreeMap<>();
-        for (Match match : solvedSolution.getMatchList()) {
-            LocalDateTime localDateTime = match.getCalendar().getStartTime();
-            if (!matchResultsOrderByTime.containsKey(localDateTime)) {
-                matchResultsOrderByTime.put(localDateTime, new ArrayList<>());
-            }
-            matchResultsOrderByTime.get(localDateTime).add(match);
-        }
-
+    private static void exportResult(BaseballSolution baseballSolution, boolean solved) {
         String status = solved ? "solved" : "unsolved";
 
-        exportExcelFile(matchResultsOrderByTime, status);
-
-        HashMap<Team, Queue<Team>> visitOrderByTeam = new HashMap<>();
-        for (LocalDateTime startTIme : matchResultsOrderByTime.keySet()) {
-            for (Match match : matchResultsOrderByTime.get(startTIme)) {
-                if (!visitOrderByTeam.containsKey(match.getHome())) {
-                    visitOrderByTeam.put(match.getHome(), new LinkedList<>());
-                }
-                visitOrderByTeam.get(match.getHome()).add(match.getHome());
-                if (!visitOrderByTeam.containsKey(match.getAway())) {
-                    visitOrderByTeam.put(match.getAway(), new LinkedList<>());
-                }
-                visitOrderByTeam.get(match.getAway()).add(match.getHome());
-            }
-
-        }
-
-        logger.info("==================== " + status + " distance stabilization ====================");
-        for (Team team : visitOrderByTeam.keySet()) {
-            Queue<Team> visitOrder = visitOrderByTeam.get(team);
-            int visitOrderNo = 1;
-            BigDecimal totalDistance = BigDecimal.ZERO;
-            Team prevTeam = null;
-            StringBuilder sb = new StringBuilder();
-            for (Team visitTeam : visitOrder) {
-                if (prevTeam != null) {
-                    totalDistance = totalDistance.add(prevTeam.getDistanceTo(visitTeam));
-                    sb.append("   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
-                            + prevTeam.getDistanceTo(visitTeam) + ", totalDistance: " + totalDistance + "\n");
-
-                } else {
-                    sb.append("\n   visit order: " + visitOrderNo + ", team: " + visitTeam.getName() + ", distance: "
-                            + 0 + ", totalDistance: " + 0 + "\n");
-                }
-                prevTeam = visitTeam;
-                visitOrderNo++;
-            }
-            logger.info("team: " + team.getName() + ", total distance: " + totalDistance);
-            logger.info(sb.toString());
-        }
-
-        HashMap<String, Integer> holidayByTeam = new HashMap<>();
-        for (Match match : solvedSolution.getMatchList()) {
-            Team homeTeam = match.getHome();
-            Calendar calendar = match.getCalendar();
-            boolean holiday = (calendar.isHoliday() || calendar.isWeekend()) ? true : false;
-            if (holiday) {
-                int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
-                holidayByTeam.put(homeTeam.getName(), prevQty + 1);
-            }
-        }
-
-        logger.info("==================== holiday stabilization ====================");
-        for (String homeTeam : holidayByTeam.keySet()) {
-            logger.info("  team: " + homeTeam + ", home match in holiday: " + holidayByTeam.getOrDefault(homeTeam, 0));
-        }
+        exportExcelFile(baseballSolution, status);
 
 
     }
 
-    private static void exportExcelFile(TreeMap<LocalDateTime, List<Match>> matchResultByTime, String status) {
-        XSSFWorkbook workbook = createWorkBook(matchResultByTime);
+    private static void exportExcelFile(BaseballSolution baseballSolution, String status) {
 
+        XSSFWorkbook workbook = createWorkBook(baseballSolution);
+
+        createExcelFile(status, workbook);
+    }
+
+    private static void createExcelFile(String status, XSSFWorkbook workbook) {
         long currentMilliseconds = System.currentTimeMillis();
         String fileName = status + "_" + String.valueOf(currentMilliseconds).substring(0, 6);
         File file = new File("data/baseball/" + status + "/" + fileName + ".xlsx");
@@ -159,10 +99,149 @@ public class BaseballApp {
         }
     }
 
-    private static XSSFWorkbook createWorkBook(TreeMap<LocalDateTime, List<Match>> matchResultByTime) {
+    private static XSSFWorkbook createWorkBook(BaseballSolution baseballSolution) {
+
+        TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime = createMatchResultsOrderByTime(baseballSolution);
+
         // 워크북 생성
         XSSFWorkbook workbook = new XSSFWorkbook();
+
+        createScheduleSheet(matchResultsOrderByTime, workbook);
+
+        createDistanceAnalysisSheet(matchResultsOrderByTime, workbook);
+
+        HashMap<String, Integer> holidayByTeam = new HashMap<>();
+        for (Match match : baseballSolution.getMatchList()) {
+            Team homeTeam = match.getHome();
+            Calendar calendar = match.getCalendar();
+            boolean holiday = (calendar.isHoliday() || calendar.isWeekend()) ? true : false;
+            if (holiday) {
+                int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
+                holidayByTeam.put(homeTeam.getName(), prevQty + 1);
+            }
+        }
+
         // 워크시트 생성
+        XSSFSheet sheet = workbook.createSheet("holidayAnalysis");
+        // 행 생성
+        XSSFRow row = sheet.createRow(0);
+        // 쎌 생성
+        XSSFCell cell;
+        // 헤더 정보 구성
+        cell = row.createCell(0);
+        cell.setCellValue("team");
+
+        cell = row.createCell(1);
+        cell.setCellValue("holidayCount");
+
+        int rowIndex = 1;
+        for (String team : holidayByTeam.keySet()) {
+            row = sheet.createRow(rowIndex);
+            // 헤더 정보 구성
+            cell = row.createCell(0);
+            cell.setCellValue(team);
+
+            cell = row.createCell(1);
+            cell.setCellValue(holidayByTeam.get(team));
+            rowIndex++;
+        }
+
+
+        return workbook;
+    }
+
+    private static TreeMap<LocalDateTime, List<Match>> createMatchResultsOrderByTime(BaseballSolution baseballSolution) {
+        TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime = new TreeMap<>();
+        for (Match match : baseballSolution.getMatchList()) {
+            LocalDateTime localDateTime = match.getCalendar().getStartTime();
+            if (!matchResultsOrderByTime.containsKey(localDateTime)) {
+                matchResultsOrderByTime.put(localDateTime, new ArrayList<>());
+            }
+            matchResultsOrderByTime.get(localDateTime).add(match);
+        }
+        return matchResultsOrderByTime;
+    }
+
+    private static void createDistanceAnalysisSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime, XSSFWorkbook workbook) {
+        HashMap<Team, Queue<Match>> visitOrderByTeam = new HashMap<>();
+        for (LocalDateTime startTIme : matchResultsOrderByTime.keySet()) {
+            for (Match match : matchResultsOrderByTime.get(startTIme)) {
+                if (!visitOrderByTeam.containsKey(match.getHome())) {
+                    visitOrderByTeam.put(match.getHome(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getHome()).add(match);
+                if (!visitOrderByTeam.containsKey(match.getAway())) {
+                    visitOrderByTeam.put(match.getAway(), new LinkedList<>());
+                }
+                visitOrderByTeam.get(match.getAway()).add(match);
+            }
+        }
+        // 워크시트 생성
+        XSSFSheet sheet = workbook.createSheet("distanceAnalysis");
+        // 행 생성
+        XSSFRow row = sheet.createRow(0);
+        // 쎌 생성
+        XSSFCell cell;
+        // 헤더 정보 구성
+        cell = row.createCell(0);
+        cell.setCellValue("team");
+
+        cell = row.createCell(1);
+        cell.setCellValue("home/away");
+
+        cell = row.createCell(2);
+        cell.setCellValue("opposite");
+
+        cell = row.createCell(3);
+        cell.setCellValue("distance");
+
+        cell = row.createCell(4);
+        cell.setCellValue("totalDistance");
+
+        int rowIndex = 1;
+        for (Team team : visitOrderByTeam.keySet()) {
+            Queue<Match> visitOrder = visitOrderByTeam.get(team);
+            BigDecimal totalDistance = BigDecimal.ZERO;
+            Team prevTeam = null;
+            StringBuilder sb = new StringBuilder();
+            for (Match match : visitOrder) {
+
+                BigDecimal distanceFromPrevTeam = BigDecimal.ZERO;
+                if (prevTeam != null) {
+                    distanceFromPrevTeam = prevTeam.getDistanceTo(match.getHome());
+                }
+                totalDistance = totalDistance.add(distanceFromPrevTeam);
+                prevTeam = match.getHome();
+
+                row = sheet.createRow(rowIndex);
+                cell = row.createCell(0);
+                cell.setCellValue(team.getName());
+
+                boolean homeMatch = team.equals(match.getHome());
+                cell = row.createCell(1);
+                cell.setCellValue(homeMatch ? "Home" : "Away");
+
+                Team opposite;
+                if (homeMatch) {
+                    opposite = match.getAway();
+                } else {
+                    opposite = match.getHome();
+                }
+
+                cell = row.createCell(2);
+                cell.setCellValue(opposite.getName());
+
+                cell = row.createCell(3);
+                cell.setCellValue(distanceFromPrevTeam.doubleValue());
+
+                cell = row.createCell(4);
+                cell.setCellValue(totalDistance.doubleValue());
+                rowIndex++;
+            }
+        }
+    }
+
+    private static void createScheduleSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime, XSSFWorkbook workbook) {
         XSSFSheet scheduleSheet = workbook.createSheet("schedule");
         // 행 생성
         XSSFRow row = scheduleSheet.createRow(0);
@@ -189,8 +268,8 @@ public class BaseballApp {
         cell.setCellValue("holiday");
 
         int rowIndex = 1;
-        for (LocalDateTime startTime : matchResultByTime.keySet()) {
-            for (Match match : matchResultByTime.get(startTime)) {
+        for (LocalDateTime startTime : matchResultsOrderByTime.keySet()) {
+            for (Match match : matchResultsOrderByTime.get(startTime)) {
                 row = scheduleSheet.createRow(rowIndex);
                 cell = row.createCell(0);
                 cell.setCellValue(startTime.toLocalDate().toString());
@@ -215,7 +294,6 @@ public class BaseballApp {
                 rowIndex++;
             }
         }
-        return workbook;
     }
 
     private static void setInitialPlan(JSONObject jsonObject, BaseballSolution unsolvedSolution) {
