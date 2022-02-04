@@ -340,6 +340,8 @@ public class BaseballApp {
 
             if (initialIndex < 5) {
                 match.setPinned(true);
+            } else if (initialIndex >= 45 && initialIndex < 49) {
+                match.setPinned(true);
             }
             initialIndex++;
         }
