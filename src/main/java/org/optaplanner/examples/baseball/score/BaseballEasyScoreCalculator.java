@@ -78,6 +78,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 String homeTeam = match.getHome().getName();
                 String awayTeam = match.getAway().getName();
                 prevMatch.add(homeTeam + awayTeam);
+                prevMatch.add(awayTeam + homeTeam);
             }
 
             if (teamDuplicationCheck.size() != 10) {
@@ -154,7 +155,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         BigDecimal distanceVariance = BigDecimal.ZERO;
         for (BigDecimal distance : distanceByTeam.values()) {
             BigDecimal diff = distance.subtract(meanDistance);
-            diff = diff.divide(BigDecimal.valueOf(10), RoundingMode.DOWN);
+            diff = diff.divide(BigDecimal.valueOf(100), RoundingMode.DOWN);
             distanceVariance = distanceVariance.add(diff.pow(2));
         }
         stabilizeDistanceScore -= distanceVariance.intValue();
@@ -176,7 +177,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         stabilizeHolidayScore -= holidayVariance;
         return BendableLongScore.of(new long[]{duplicationHardScore, successiveHardScore},
-                new long[]{minimizeShortScore, stabilizeHolidayScore, stadiumContinuousScore, stabilizeDistanceScore});
+                new long[]{minimizeShortScore, stabilizeHolidayScore, stadiumContinuousScore, stabilizeDistanceScore, -sumDistance.longValue()});
 
 
     }
