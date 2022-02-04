@@ -4,7 +4,7 @@
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <environmentMode>REPRODUCIBLE</environmentMode>
   <randomSeed>0</randomSeed>
-  <moveThreadCount>8</moveThreadCount>
+  <moveThreadCount>AUTO</moveThreadCount>
   <!-- To solve faster by saturating multiple CPU cores -->
 
   <!-- Domain model configuration -->
