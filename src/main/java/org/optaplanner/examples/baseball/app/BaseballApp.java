@@ -330,6 +330,10 @@ public class BaseballApp {
             String key = home + away + consecutive;
 
 
+            if (matchHashMap.get(key) == null) {
+                int t = 1;
+                t = 2;
+            }
             Match match = matchHashMap.get(key).poll();
 
 
@@ -340,7 +344,7 @@ public class BaseballApp {
 
             if (initialIndex < 5) {
                 match.setPinned(true);
-            } else if (initialIndex >= 45 && initialIndex < 49) {
+            } else if (initialIndex >= 45 && initialIndex < 50) {
                 match.setPinned(true);
             }
             initialIndex++;

@@ -35,7 +35,6 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         int minimizeShortScore = 0;
         int stabilizeDistanceScore = 0;
         int stabilizeHolidayScore = 0;
-        int stadiumContinuousScore = 0;
 
         TreeMap<Calendar, List<Match>> matchListByCalendar = getCalendarListTreeMap(baseballSolution);
 
@@ -48,6 +47,8 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             HashSet<String> teamDuplicationCheck = new HashSet<>();
             HashSet<String> stadiumDuplicationCheck = new HashSet<>();
             List<Match> matchList = matchListByCalendar.get(calendar);
+
+            int calendarConsecutive = calendar.getConsecutive();
             for (Match match : matchList) {
                 String homeTeam = match.getHome().getName();
                 String awayTeam = match.getAway().getName();
@@ -79,6 +80,10 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 String awayTeam = match.getAway().getName();
                 prevMatch.add(homeTeam + awayTeam);
                 prevMatch.add(awayTeam + homeTeam);
+
+                if (match.getConsecutive() != calendarConsecutive) {
+                    duplicationHardScore -= 1;
+                }
             }
 
             if (teamDuplicationCheck.size() != 10) {
@@ -135,7 +140,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                     }
 
                     if (consecutive > 3) {
-                        stadiumContinuousScore -= 1;
+                        duplicationHardScore -= 1;
                     }
                 }
                 prevIsHome = isHome;
@@ -177,7 +182,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         stabilizeHolidayScore -= holidayVariance;
         return BendableLongScore.of(new long[]{duplicationHardScore, successiveHardScore},
-                new long[]{minimizeShortScore, stabilizeHolidayScore, stadiumContinuousScore, stabilizeDistanceScore, -sumDistance.longValue()});
+                new long[]{minimizeShortScore, stabilizeHolidayScore, stabilizeDistanceScore, -sumDistance.longValue()});
 
 
     }

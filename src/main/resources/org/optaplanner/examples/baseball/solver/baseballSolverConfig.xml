@@ -4,7 +4,7 @@
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <environmentMode>REPRODUCIBLE</environmentMode>
   <randomSeed>0</randomSeed>
-  <moveThreadCount>AUTO</moveThreadCount>
+  <moveThreadCount>12</moveThreadCount>
   <!-- To solve faster by saturating multiple CPU cores -->
 
   <!-- Domain model configuration -->
@@ -26,8 +26,8 @@
 
   <!-- Optimization algorithms configuration -->
   <termination>
-    <minutesSpentLimit>2</minutesSpentLimit>
-    <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+    <minutesSpentLimit>10</minutesSpentLimit>
+    <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
   </termination>
 
   <!-- Power tweaked optimization algorithms configuration -->
@@ -37,8 +37,8 @@
   <localSearch>
 
     <termination>
-      <stepCountLimit>300</stepCountLimit>
-      <unimprovedStepCountLimit>10</unimprovedStepCountLimit>
+      <stepCountLimit>1000</stepCountLimit>
+      <unimprovedStepCountLimit>30</unimprovedStepCountLimit>
     </termination>
     <unionMoveSelector>
       <changeMoveSelector/>
@@ -47,10 +47,10 @@
       <pillarSwapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
-      <lateAcceptanceSize>200</lateAcceptanceSize>
+      <lateAcceptanceSize>1000</lateAcceptanceSize>
     </acceptor>
     <forager>
-      <acceptedCountLimit>1000</acceptedCountLimit>
+      <acceptedCountLimit>400</acceptedCountLimit>
     </forager>
   </localSearch>
 

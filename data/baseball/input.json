@@ -1732,50 +1732,50 @@
     {
       "index": 5,
       "datetime": "2021-04-05 00:00:00",
-      "home": "두산",
-      "away": "삼성",
+      "home": "LG",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
       "index": 6,
       "datetime": "2021-04-05 00:00:00",
-      "home": "키움",
-      "away": "LG",
+      "home": "KT",
+      "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 7,
       "datetime": "2021-04-05 00:00:00",
-      "home": "KT",
-      "away": "SSG",
+      "home": "키움",
+      "away": "NC",
       "consecutive": 3.0
     },
     {
       "index": 8,
       "datetime": "2021-04-05 00:00:00",
-      "home": "KIA",
+      "home": "삼성",
       "away": "한화",
       "consecutive": 3.0
     },
     {
       "index": 9,
       "datetime": "2021-04-05 00:00:00",
-      "home": "NC",
-      "away": "롯데",
+      "home": "롯데",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
       "index": 10,
       "datetime": "2021-04-08 00:00:00",
-      "home": "LG",
-      "away": "NC",
+      "home": "SSG",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
       "index": 11,
       "datetime": "2021-04-08 00:00:00",
-      "home": "SSG",
-      "away": "KIA",
+      "home": "LG",
+      "away": "NC",
       "consecutive": 3.0
     },
     {
@@ -1802,50 +1802,50 @@
     {
       "index": 15,
       "datetime": "2021-04-12 00:00:00",
-      "home": "LG",
-      "away": "SSG",
+      "home": "두산",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
       "index": 16,
       "datetime": "2021-04-12 00:00:00",
-      "home": "키움",
-      "away": "NC",
+      "home": "KT",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
       "index": 17,
       "datetime": "2021-04-12 00:00:00",
-      "home": "KT",
-      "away": "두산",
+      "home": "키움",
+      "away": "LG",
       "consecutive": 3.0
     },
     {
       "index": 18,
       "datetime": "2021-04-12 00:00:00",
-      "home": "삼성",
+      "home": "KIA",
       "away": "한화",
       "consecutive": 3.0
     },
     {
       "index": 19,
       "datetime": "2021-04-12 00:00:00",
-      "home": "KIA",
+      "home": "NC",
       "away": "롯데",
       "consecutive": 3.0
     },
     {
       "index": 20,
       "datetime": "2021-04-15 00:00:00",
-      "home": "두산",
-      "away": "키움",
+      "home": "SSG",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
       "index": 21,
       "datetime": "2021-04-15 00:00:00",
-      "home": "SSG",
-      "away": "삼성",
+      "home": "두산",
+      "away": "키움",
       "consecutive": 3.0
     },
     {
@@ -1858,29 +1858,29 @@
     {
       "index": 23,
       "datetime": "2021-04-15 00:00:00",
-      "home": "롯데",
-      "away": "KT",
+      "home": "KIA",
+      "away": "NC",
       "consecutive": 3.0
     },
     {
       "index": 24,
       "datetime": "2021-04-15 00:00:00",
-      "home": "NC",
-      "away": "KIA",
+      "home": "롯데",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
       "index": 25,
       "datetime": "2021-04-19 00:00:00",
-      "home": "LG",
-      "away": "KT",
+      "home": "SSG",
+      "away": "키움",
       "consecutive": 3.0
     },
     {
       "index": 26,
       "datetime": "2021-04-19 00:00:00",
-      "home": "SSG",
-      "away": "키움",
+      "home": "LG",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
@@ -1893,29 +1893,29 @@
     {
       "index": 28,
       "datetime": "2021-04-19 00:00:00",
-      "home": "롯데",
-      "away": "한화",
-      "consecutive": 3.0
-    },
-    {
-      "index": 29,
-      "datetime": "2021-04-19 00:00:00",
       "home": "NC",
       "away": "삼성",
       "consecutive": 3.0
     },
     {
+      "index": 29,
+      "datetime": "2021-04-19 00:00:00",
+      "home": "롯데",
+      "away": "한화",
+      "consecutive": 3.0
+    },
+    {
       "index": 30,
       "datetime": "2021-04-22 00:00:00",
-      "home": "두산",
-      "away": "LG",
+      "home": "SSG",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
       "index": 31,
       "datetime": "2021-04-22 00:00:00",
-      "home": "키움",
-      "away": "KIA",
+      "home": "두산",
+      "away": "LG",
       "consecutive": 3.0
     },
     {
@@ -1928,8 +1928,8 @@
     {
       "index": 33,
       "datetime": "2021-04-22 00:00:00",
-      "home": "한화",
-      "away": "SSG",
+      "home": "키움",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
@@ -1977,22 +1977,22 @@
     {
       "index": 40,
       "datetime": "2021-04-29 00:00:00",
-      "home": "LG",
-      "away": "롯데",
+      "home": "SSG",
+      "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 41,
       "datetime": "2021-04-29 00:00:00",
-      "home": "키움",
-      "away": "KT",
+      "home": "LG",
+      "away": "롯데",
       "consecutive": 3.0
     },
     {
       "index": 42,
       "datetime": "2021-04-29 00:00:00",
-      "home": "SSG",
-      "away": "두산",
+      "home": "키움",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
@@ -2047,29 +2047,29 @@
     {
       "index": 50,
       "datetime": "2021-05-06 00:00:00",
-      "home": "두산",
-      "away": "KT",
+      "home": "SSG",
+      "away": "키움",
       "consecutive": 3.0
     },
     {
       "index": 51,
       "datetime": "2021-05-06 00:00:00",
-      "home": "키움",
-      "away": "SSG",
+      "home": "두산",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
       "index": 52,
       "datetime": "2021-05-06 00:00:00",
-      "home": "한화",
-      "away": "KIA",
+      "home": "삼성",
+      "away": "롯데",
       "consecutive": 3.0
     },
     {
       "index": 53,
       "datetime": "2021-05-06 00:00:00",
-      "home": "롯데",
-      "away": "삼성",
+      "home": "KIA",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
@@ -2082,36 +2082,36 @@
     {
       "index": 55,
       "datetime": "2021-05-10 00:00:00",
-      "home": "LG",
-      "away": "한화",
+      "home": "두산",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
       "index": 56,
       "datetime": "2021-05-10 00:00:00",
-      "home": "키움",
-      "away": "두산",
+      "home": "KT",
+      "away": "LG",
       "consecutive": 3.0
     },
     {
       "index": 57,
       "datetime": "2021-05-10 00:00:00",
-      "home": "삼성",
-      "away": "SSG",
+      "home": "한화",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
       "index": 58,
       "datetime": "2021-05-10 00:00:00",
-      "home": "KIA",
-      "away": "KT",
+      "home": "NC",
+      "away": "키움",
       "consecutive": 3.0
     },
     {
       "index": 59,
       "datetime": "2021-05-10 00:00:00",
       "home": "롯데",
-      "away": "NC",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
@@ -2124,99 +2124,99 @@
     {
       "index": 61,
       "datetime": "2021-05-13 00:00:00",
-      "home": "SSG",
-      "away": "NC",
+      "home": "키움",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
       "index": 62,
-      "datetime": "2021-05-13 00:00:00",
-      "home": "KT",
-      "away": "키움",
-      "consecutive": 3.0
-    },
-    {
-      "index": 63,
       "datetime": "2021-05-13 00:00:00",
       "home": "한화",
       "away": "롯데",
       "consecutive": 3.0
     },
     {
-      "index": 64,
+      "index": 63,
       "datetime": "2021-05-13 00:00:00",
       "home": "삼성",
+      "away": "KT",
+      "consecutive": 3.0
+    },
+    {
+      "index": 64,
+      "datetime": "2021-05-13 00:00:00",
+      "home": "NC",
       "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 65,
       "datetime": "2021-05-17 00:00:00",
-      "home": "두산",
-      "away": "SSG",
+      "home": "LG",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
       "index": 66,
       "datetime": "2021-05-17 00:00:00",
-      "home": "KT",
-      "away": "LG",
+      "home": "키움",
+      "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 67,
       "datetime": "2021-05-17 00:00:00",
-      "home": "한화",
-      "away": "삼성",
+      "home": "삼성",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
       "index": 68,
       "datetime": "2021-05-17 00:00:00",
-      "home": "롯데",
-      "away": "KIA",
+      "home": "KIA",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
       "index": 69,
       "datetime": "2021-05-17 00:00:00",
-      "home": "NC",
-      "away": "키움",
+      "home": "롯데",
+      "away": "NC",
       "consecutive": 3.0
     },
     {
       "index": 70,
-      "datetime": "2021-05-20 00:00:00",
-      "home": "두산",
-      "away": "롯데",
-      "consecutive": 3.0
-    },
-    {
-      "index": 71,
-      "datetime": "2021-05-20 00:00:00",
-      "home": "키움",
-      "away": "한화",
-      "consecutive": 3.0
-    },
-    {
-      "index": 72,
       "datetime": "2021-05-20 00:00:00",
       "home": "SSG",
       "away": "LG",
       "consecutive": 3.0
     },
     {
+      "index": 71,
+      "datetime": "2021-05-20 00:00:00",
+      "home": "두산",
+      "away": "롯데",
+      "consecutive": 3.0
+    },
+    {
+      "index": 72,
+      "datetime": "2021-05-20 00:00:00",
+      "home": "KT",
+      "away": "삼성",
+      "consecutive": 3.0
+    },
+    {
       "index": 73,
       "datetime": "2021-05-20 00:00:00",
-      "home": "삼성",
-      "away": "KT",
+      "home": "키움",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
       "index": 74,
       "datetime": "2021-05-20 00:00:00",
-      "home": "KIA",
-      "away": "NC",
+      "home": "NC",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
@@ -2229,29 +2229,29 @@
     {
       "index": 76,
       "datetime": "2021-05-24 00:00:00",
-      "home": "SSG",
-      "away": "롯데",
-      "consecutive": 3.0
-    },
-    {
-      "index": 77,
-      "datetime": "2021-05-24 00:00:00",
       "home": "한화",
       "away": "두산",
       "consecutive": 3.0
     },
     {
-      "index": 78,
+      "index": 77,
       "datetime": "2021-05-24 00:00:00",
       "home": "삼성",
       "away": "KIA",
       "consecutive": 3.0
     },
     {
-      "index": 79,
+      "index": 78,
       "datetime": "2021-05-24 00:00:00",
       "home": "NC",
       "away": "KT",
+      "consecutive": 3.0
+    },
+    {
+      "index": 79,
+      "datetime": "2021-05-24 00:00:00",
+      "home": "롯데",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
@@ -2292,22 +2292,22 @@
     {
       "index": 85,
       "datetime": "2021-05-31 00:00:00",
-      "home": "두산",
-      "away": "KIA",
+      "home": "SSG",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
       "index": 86,
       "datetime": "2021-05-31 00:00:00",
-      "home": "키움",
-      "away": "삼성",
+      "home": "두산",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
       "index": 87,
       "datetime": "2021-05-31 00:00:00",
-      "home": "SSG",
-      "away": "KT",
+      "home": "키움",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
@@ -2404,8 +2404,8 @@
     {
       "index": 101,
       "datetime": "2021-06-10 00:00:00",
-      "home": "SSG",
-      "away": "한화",
+      "home": "한화",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
@@ -2432,85 +2432,85 @@
     {
       "index": 105,
       "datetime": "2021-06-14 00:00:00",
-      "home": "LG",
-      "away": "삼성",
+      "home": "SSG",
+      "away": "롯데",
       "consecutive": 3.0
     },
     {
       "index": 106,
       "datetime": "2021-06-14 00:00:00",
-      "home": "키움",
-      "away": "두산",
+      "home": "두산",
+      "away": "KT",
       "consecutive": 3.0
     },
     {
       "index": 107,
       "datetime": "2021-06-14 00:00:00",
-      "home": "KT",
-      "away": "SSG",
+      "home": "키움",
+      "away": "LG",
       "consecutive": 3.0
     },
     {
       "index": 108,
       "datetime": "2021-06-14 00:00:00",
-      "home": "한화",
-      "away": "롯데",
+      "home": "KIA",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
       "index": 109,
       "datetime": "2021-06-14 00:00:00",
       "home": "NC",
-      "away": "KIA",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
       "index": 110,
       "datetime": "2021-06-17 00:00:00",
-      "home": "두산",
-      "away": "KT",
+      "home": "LG",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
       "index": 111,
       "datetime": "2021-06-17 00:00:00",
-      "home": "키움",
-      "away": "LG",
+      "home": "KT",
+      "away": "SSG",
       "consecutive": 3.0
     },
     {
       "index": 112,
       "datetime": "2021-06-17 00:00:00",
-      "home": "KIA",
-      "away": "삼성",
+      "home": "키움",
+      "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 113,
       "datetime": "2021-06-17 00:00:00",
-      "home": "롯데",
-      "away": "SSG",
+      "home": "한화",
+      "away": "롯데",
       "consecutive": 3.0
     },
     {
       "index": 114,
       "datetime": "2021-06-17 00:00:00",
       "home": "NC",
-      "away": "한화",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
       "index": 115,
       "datetime": "2021-06-21 00:00:00",
-      "home": "LG",
-      "away": "한화",
+      "home": "SSG",
+      "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 116,
       "datetime": "2021-06-21 00:00:00",
-      "home": "SSG",
-      "away": "두산",
+      "home": "LG",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
@@ -2705,43 +2705,43 @@
     {
       "index": 144,
       "datetime": "2021-07-08 00:00:00",
-      "home": "KIA",
-      "away": "한화",
+      "home": "한화",
+      "away": "KIA",
       "consecutive": 3.0
     },
     {
       "index": 145,
+      "datetime": "2021-07-12 00:00:00",
+      "home": "SSG",
+      "away": "NC",
+      "consecutive": 3.0
+    },
+    {
+      "index": 146,
       "datetime": "2021-07-12 00:00:00",
       "home": "LG",
       "away": "KIA",
       "consecutive": 3.0
     },
     {
-      "index": 146,
-      "datetime": "2021-07-12 00:00:00",
-      "home": "SSG",
-      "away": "키움",
-      "consecutive": 3.0
-    },
-    {
       "index": 147,
       "datetime": "2021-07-12 00:00:00",
       "home": "KT",
-      "away": "삼성",
+      "away": "키움",
       "consecutive": 3.0
     },
     {
       "index": 148,
       "datetime": "2021-07-12 00:00:00",
-      "home": "롯데",
-      "away": "한화",
+      "home": "삼성",
+      "away": "두산",
       "consecutive": 3.0
     },
     {
       "index": 149,
       "datetime": "2021-07-12 00:00:00",
-      "home": "NC",
-      "away": "두산",
+      "home": "롯데",
+      "away": "한화",
       "consecutive": 3.0
     },
     {
@@ -2768,8 +2768,8 @@
     {
       "index": 153,
       "datetime": "2021-07-22 00:00:00",
-      "home": "롯데",
-      "away": "KIA",
+      "home": "KIA",
+      "away": "롯데",
       "consecutive": 3.0
     },
     {
@@ -2831,8 +2831,8 @@
     {
       "index": 162,
       "datetime": "2021-07-29 00:00:00",
-      "home": "삼성",
-      "away": "롯데",
+      "home": "롯데",
+      "away": "삼성",
       "consecutive": 3.0
     },
     {
@@ -2964,15 +2964,15 @@
     {
       "index": 181,
       "datetime": "2021-08-13 00:00:00",
-      "home": "KT",
-      "away": "삼성",
+      "home": "한화",
+      "away": "키움",
       "consecutive": 2.0
     },
     {
       "index": 182,
       "datetime": "2021-08-13 00:00:00",
-      "home": "한화",
-      "away": "키움",
+      "home": "삼성",
+      "away": "KT",
       "consecutive": 2.0
     },
     {
@@ -3132,15 +3132,15 @@
     {
       "index": 205,
       "datetime": "2021-08-25 00:00:00",
-      "home": "LG",
-      "away": "KIA",
+      "home": "SSG",
+      "away": "KT",
       "consecutive": 2.0
     },
     {
       "index": 206,
       "datetime": "2021-08-25 00:00:00",
-      "home": "KT",
-      "away": "SSG",
+      "home": "LG",
+      "away": "KIA",
       "consecutive": 2.0
     },
     {
@@ -3174,42 +3174,42 @@
     {
       "index": 211,
       "datetime": "2021-08-27 00:00:00",
-      "home": "SSG",
-      "away": "롯데",
-      "consecutive": 2.0
-    },
-    {
-      "index": 212,
-      "datetime": "2021-08-27 00:00:00",
       "home": "삼성",
       "away": "한화",
       "consecutive": 2.0
     },
     {
-      "index": 213,
+      "index": 212,
       "datetime": "2021-08-27 00:00:00",
       "home": "KIA",
       "away": "두산",
       "consecutive": 2.0
     },
     {
-      "index": 214,
+      "index": 213,
       "datetime": "2021-08-27 00:00:00",
       "home": "NC",
       "away": "KT",
       "consecutive": 2.0
     },
     {
+      "index": 214,
+      "datetime": "2021-08-27 00:00:00",
+      "home": "롯데",
+      "away": "SSG",
+      "consecutive": 2.0
+    },
+    {
       "index": 215,
       "datetime": "2021-08-30 00:00:00",
-      "home": "LG",
+      "home": "SSG",
       "away": "NC",
       "consecutive": 2.0
     },
     {
       "index": 216,
       "datetime": "2021-08-30 00:00:00",
-      "home": "키움",
+      "home": "두산",
       "away": "롯데",
       "consecutive": 2.0
     },
@@ -3217,70 +3217,70 @@
       "index": 217,
       "datetime": "2021-08-30 00:00:00",
       "home": "KT",
-      "away": "두산",
+      "away": "LG",
       "consecutive": 2.0
     },
     {
       "index": 218,
       "datetime": "2021-08-30 00:00:00",
-      "home": "한화",
-      "away": "KIA",
-      "consecutive": 2.0
-    },
-    {
-      "index": 219,
-      "datetime": "2021-08-30 00:00:00",
-      "home": "삼성",
-      "away": "SSG",
-      "consecutive": 2.0
-    },
-    {
-      "index": 220,
-      "datetime": "2021-09-01 00:00:00",
-      "home": "두산",
-      "away": "롯데",
-      "consecutive": 2.0
-    },
-    {
-      "index": 221,
-      "datetime": "2021-09-01 00:00:00",
       "home": "키움",
       "away": "한화",
       "consecutive": 2.0
     },
     {
-      "index": 222,
-      "datetime": "2021-09-01 00:00:00",
-      "home": "SSG",
-      "away": "NC",
-      "consecutive": 2.0
-    },
-    {
-      "index": 223,
-      "datetime": "2021-09-01 00:00:00",
-      "home": "KT",
-      "away": "LG",
-      "consecutive": 2.0
-    },
-    {
-      "index": 224,
-      "datetime": "2021-09-01 00:00:00",
+      "index": 219,
+      "datetime": "2021-08-30 00:00:00",
       "home": "KIA",
       "away": "삼성",
       "consecutive": 2.0
     },
     {
+      "index": 220,
+      "datetime": "2021-09-01 00:00:00",
+      "home": "LG",
+      "away": "NC",
+      "consecutive": 2.0
+    },
+    {
+      "index": 221,
+      "datetime": "2021-09-01 00:00:00",
+      "home": "KT",
+      "away": "두산",
+      "consecutive": 2.0
+    },
+    {
+      "index": 222,
+      "datetime": "2021-09-01 00:00:00",
+      "home": "키움",
+      "away": "롯데",
+      "consecutive": 2.0
+    },
+    {
+      "index": 223,
+      "datetime": "2021-09-01 00:00:00",
+      "home": "한화",
+      "away": "KIA",
+      "consecutive": 2.0
+    },
+    {
+      "index": 224,
+      "datetime": "2021-09-01 00:00:00",
+      "home": "삼성",
+      "away": "SSG",
+      "consecutive": 2.0
+    },
+    {
       "index": 225,
       "datetime": "2021-09-03 00:00:00",
-      "home": "두산",
-      "away": "삼성",
+      "home": "SSG",
+      "away": "키움",
       "consecutive": 2.0
     },
     {
       "index": 226,
       "datetime": "2021-09-03 00:00:00",
-      "home": "SSG",
-      "away": "키움",
+      "home": "두산",
+      "away": "삼성",
       "consecutive": 2.0
     },
     {
@@ -3343,98 +3343,98 @@
       "index": 235,
       "datetime": "2021-09-08 00:00:00",
       "home": "두산",
-      "away": "한화",
+      "away": "KIA",
       "consecutive": 2.0
     },
     {
       "index": 236,
       "datetime": "2021-09-08 00:00:00",
       "home": "키움",
-      "away": "LG",
+      "away": "KT",
       "consecutive": 2.0
     },
     {
       "index": 237,
       "datetime": "2021-09-08 00:00:00",
-      "home": "SSG",
-      "away": "KIA",
+      "home": "한화",
+      "away": "SSG",
       "consecutive": 2.0
     },
     {
       "index": 238,
       "datetime": "2021-09-08 00:00:00",
-      "home": "KT",
-      "away": "NC",
+      "home": "삼성",
+      "away": "LG",
       "consecutive": 2.0
     },
     {
       "index": 239,
       "datetime": "2021-09-08 00:00:00",
-      "home": "삼성",
-      "away": "롯데",
+      "home": "롯데",
+      "away": "NC",
       "consecutive": 2.0
     },
     {
       "index": 240,
       "datetime": "2021-09-10 00:00:00",
-      "home": "두산",
+      "home": "SSG",
       "away": "KIA",
       "consecutive": 2.0
     },
     {
       "index": 241,
       "datetime": "2021-09-10 00:00:00",
-      "home": "키움",
-      "away": "KT",
+      "home": "두산",
+      "away": "한화",
       "consecutive": 2.0
     },
     {
       "index": 242,
       "datetime": "2021-09-10 00:00:00",
-      "home": "한화",
-      "away": "SSG",
+      "home": "KT",
+      "away": "NC",
       "consecutive": 2.0
     },
     {
       "index": 243,
       "datetime": "2021-09-10 00:00:00",
-      "home": "삼성",
+      "home": "키움",
       "away": "LG",
       "consecutive": 2.0
     },
     {
       "index": 244,
       "datetime": "2021-09-10 00:00:00",
-      "home": "롯데",
-      "away": "NC",
+      "home": "삼성",
+      "away": "롯데",
       "consecutive": 2.0
     },
     {
       "index": 245,
+      "datetime": "2021-09-13 00:00:00",
+      "home": "SSG",
+      "away": "롯데",
+      "consecutive": 2.0
+    },
+    {
+      "index": 246,
       "datetime": "2021-09-13 00:00:00",
       "home": "두산",
       "away": "LG",
       "consecutive": 2.0
     },
     {
-      "index": 246,
+      "index": 247,
       "datetime": "2021-09-13 00:00:00",
       "home": "한화",
       "away": "KT",
       "consecutive": 2.0
     },
     {
-      "index": 247,
+      "index": 248,
       "datetime": "2021-09-13 00:00:00",
       "home": "KIA",
       "away": "키움",
-      "consecutive": 2.0
-    },
-    {
-      "index": 248,
-      "datetime": "2021-09-13 00:00:00",
-      "home": "롯데",
-      "away": "SSG",
       "consecutive": 2.0
     },
     {
@@ -3447,71 +3447,71 @@
     {
       "index": 250,
       "datetime": "2021-09-15 00:00:00",
-      "home": "LG",
-      "away": "KT",
+      "home": "SSG",
+      "away": "두산",
       "consecutive": 2.0
     },
     {
       "index": 251,
       "datetime": "2021-09-15 00:00:00",
-      "home": "삼성",
-      "away": "두산",
+      "home": "LG",
+      "away": "한화",
       "consecutive": 2.0
     },
     {
       "index": 252,
       "datetime": "2021-09-15 00:00:00",
-      "home": "KIA",
-      "away": "한화",
+      "home": "KT",
+      "away": "롯데",
       "consecutive": 2.0
     },
     {
       "index": 253,
       "datetime": "2021-09-15 00:00:00",
-      "home": "롯데",
-      "away": "키움",
+      "home": "키움",
+      "away": "NC",
       "consecutive": 2.0
     },
     {
       "index": 254,
       "datetime": "2021-09-15 00:00:00",
-      "home": "NC",
-      "away": "SSG",
+      "home": "삼성",
+      "away": "KIA",
       "consecutive": 2.0
     },
     {
       "index": 255,
       "datetime": "2021-09-17 00:00:00",
       "home": "LG",
-      "away": "한화",
+      "away": "KT",
       "consecutive": 2.0
     },
     {
       "index": 256,
       "datetime": "2021-09-17 00:00:00",
-      "home": "키움",
-      "away": "NC",
+      "home": "삼성",
+      "away": "두산",
       "consecutive": 2.0
     },
     {
       "index": 257,
       "datetime": "2021-09-17 00:00:00",
-      "home": "SSG",
-      "away": "두산",
+      "home": "KIA",
+      "away": "한화",
       "consecutive": 2.0
     },
     {
       "index": 258,
       "datetime": "2021-09-17 00:00:00",
-      "home": "KT",
-      "away": "롯데",
+      "home": "NC",
+      "away": "SSG",
       "consecutive": 2.0
     },
     {
       "index": 259,
       "datetime": "2021-09-17 00:00:00",
-      "home": "삼성",
-      "away": "KIA",
+      "home": "롯데",
+      "away": "키움",
       "consecutive": 2.0
     },
     {
@@ -3524,15 +3524,15 @@
     {
       "index": 261,
       "datetime": "2021-09-20 00:00:00",
-      "home": "키움",
-      "away": "삼성",
+      "home": "KT",
+      "away": "SSG",
       "consecutive": 2.0
     },
     {
       "index": 262,
       "datetime": "2021-09-20 00:00:00",
-      "home": "SSG",
-      "away": "KT",
+      "home": "키움",
+      "away": "삼성",
       "consecutive": 2.0
     },
     {
@@ -3552,29 +3552,29 @@
     {
       "index": 265,
       "datetime": "2021-09-22 00:00:00",
-      "home": "LG",
-      "away": "롯데",
-      "consecutive": 2.0
-    },
-    {
-      "index": 266,
-      "datetime": "2021-09-22 00:00:00",
-      "home": "키움",
-      "away": "두산",
-      "consecutive": 2.0
-    },
-    {
-      "index": 267,
-      "datetime": "2021-09-22 00:00:00",
       "home": "SSG",
       "away": "한화",
       "consecutive": 2.0
     },
     {
+      "index": 266,
+      "datetime": "2021-09-22 00:00:00",
+      "home": "LG",
+      "away": "롯데",
+      "consecutive": 2.0
+    },
+    {
+      "index": 267,
+      "datetime": "2021-09-22 00:00:00",
+      "home": "KT",
+      "away": "삼성",
+      "consecutive": 2.0
+    },
+    {
       "index": 268,
       "datetime": "2021-09-22 00:00:00",
-      "home": "삼성",
-      "away": "KT",
+      "home": "키움",
+      "away": "두산",
       "consecutive": 2.0
     },
     {
