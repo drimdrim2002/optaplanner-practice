@@ -4,7 +4,7 @@
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
   <environmentMode>REPRODUCIBLE</environmentMode>
   <randomSeed>0</randomSeed>
-  <moveThreadCount>12</moveThreadCount>
+  <moveThreadCount>AUTO</moveThreadCount>
   <!-- To solve faster by saturating multiple CPU cores -->
 
   <!-- Domain model configuration -->
@@ -27,7 +27,7 @@
   <!-- Optimization algorithms configuration -->
   <termination>
     <minutesSpentLimit>10</minutesSpentLimit>
-    <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
+    <unimprovedSecondsSpentLimit>120</unimprovedSecondsSpentLimit>
   </termination>
 
   <!-- Power tweaked optimization algorithms configuration -->
@@ -38,7 +38,9 @@
 
     <termination>
       <stepCountLimit>1000</stepCountLimit>
-      <unimprovedStepCountLimit>30</unimprovedStepCountLimit>
+<!--      <unimprovedStepCountLimit>1000</unimprovedStepCountLimit>-->
+<!--      <unimprovedStepCountLimit>100</unimprovedStepCountLimit>-->
+      <unimprovedStepCountLimit>100</unimprovedStepCountLimit>
     </termination>
     <unionMoveSelector>
       <changeMoveSelector/>
