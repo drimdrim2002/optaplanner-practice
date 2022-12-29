@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.ValidationException;
 import java.io.*;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -123,7 +124,7 @@ public class BaseballApp {
         for (Match match : baseballSolution.getMatchList()) {
             Team homeTeam = match.getHome();
             Calendar calendar = match.getCalendar();
-            boolean holiday = (calendar.isHoliday() || calendar.isWeekend()) ? true : false;
+            boolean holiday = calendar.getHoliday() > 0;
             if (holiday) {
                 int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
                 holidayByTeam.put(homeTeam.getName(), prevQty + 1);
@@ -208,7 +209,13 @@ public class BaseballApp {
         cell.setCellValue("totalDistance");
 
         cell = row.createCell(5);
-        cell.setCellValue("date");
+        cell.setCellValue("matchDate");
+
+        cell = row.createCell(6);
+        cell.setCellValue("dayOfWeek");
+
+        cell = row.createCell(7);
+        cell.setCellValue("weekdayOrWeekend");
 
 
         int rowIndex = 1;
@@ -216,6 +223,7 @@ public class BaseballApp {
             Queue<Match> visitOrder = visitOrderByTeam.get(team);
             BigDecimal totalDistance = BigDecimal.ZERO;
             Team prevTeam = null;
+            Match prevMatch = null;
             for (Match match : visitOrder) {
 
                 BigDecimal distanceFromPrevTeam = BigDecimal.ZERO;
@@ -223,7 +231,6 @@ public class BaseballApp {
                     distanceFromPrevTeam = prevTeam.getDistanceTo(match.getHome());
                 }
                 totalDistance = totalDistance.add(distanceFromPrevTeam);
-                prevTeam = match.getHome();
 
                 row = sheet.createRow(rowIndex);
                 cell = row.createCell(0);
@@ -250,9 +257,21 @@ public class BaseballApp {
                 cell.setCellValue(totalDistance.doubleValue());
 
                 cell = row.createCell(5);
+                cell.setCellValue(match.getCalendar().getStartTime().toString());
+
+                cell = row.createCell(6);
                 cell.setCellValue(match.getCalendar().getStartTime().getDayOfWeek().toString());
 
+                cell = row.createCell(7);
+                String weekdayOrWeekend = "주말이동";
+                if (prevMatch != null && prevMatch.getCalendar().getStartTime().getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
+                    weekdayOrWeekend = "주중이동";
+                } 
+                cell.setCellValue(weekdayOrWeekend);
 
+
+                prevTeam = match.getHome();
+                prevMatch = match;
 
                 rowIndex++;
             }
@@ -306,8 +325,8 @@ public class BaseballApp {
                 cell.setCellValue(match.getConsecutive());
 
                 cell = row.createCell(5);
-                boolean holiday = match.getCalendar().isHoliday() || match.getCalendar().isWeekend() ? true : false;
-                cell.setCellValue(holiday == true ? 1 : 0);
+//                boolean holiday = match.getCalendar().getHoliday() > 0 ? true : false;
+                cell.setCellValue(match.getCalendar().getHoliday());
 
                 rowIndex++;
             }
@@ -346,22 +365,20 @@ public class BaseballApp {
             String key = home + away + consecutive;
 
             Match match = matchHashMap.get(key).poll();
-            Calendar calendar = calendarHashMap.get(datetime);
-            match.setCalendar(calendar);
+            if (match != null) {
+                Calendar calendar = calendarHashMap.get(datetime);
+                match.setCalendar(calendar);
+                LocalDateTime matchStartTime = calendar.getStartTime();
+                if (matchStartTime.getMonth().equals(Month.APRIL) && matchStartTime.getDayOfMonth() == 1) { // 개막전 고정
+                    match.setPinned(true);
+                    logger.info(initialPlanInfo.toString());
+                } else if (matchStartTime.getMonth().equals(Month.MAY) && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
+                    match.setPinned(true);
+                    logger.info(initialPlanInfo.toString());
 
-            LocalDateTime matchStartTime = calendar.getStartTime();
-            if (matchStartTime.getMonth().equals(Month.APRIL) && matchStartTime.getDayOfMonth() == 1) { // 개막전 고정
-                match.setPinned(true);
-                logger.info(initialPlanInfo.toString());
-            } else if (matchStartTime.getMonth().equals(Month.MAY) && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
-                match.setPinned(true);
-                logger.info(initialPlanInfo.toString());
-
+                }
             }
         }
-
-        int t = 1;
-        t = 2;
     }
 
     private static BaseballSolution makeSolution(JSONObject jsonObject) {
@@ -380,16 +397,18 @@ public class BaseballApp {
             LocalDateTime startTime = LocalDateTime.parse((String) calendarInfo.get("datetime"), formatter);
             logger.info(startTime.toString());
             long consecutive =  (Long) calendarInfo.get("consecutive");
-            boolean holiday = (Long) calendarInfo.get("holiday") == 0 ? false : true;
-            boolean weekend = (Long) calendarInfo.get("weekend") == 0 ? false : true;
+//            boolean holiday = (Long) calendarInfo.get("holiday") == 0 ? false : true;
+//            boolean weekend = (Long) calendarInfo.get("weekend") == 0 ? false : true;
+            Long holiday = (Long)calendarInfo.get("holiday");
+            Long weekend = (Long)calendarInfo.get("weekend");
 
-            Calendar period = new Calendar(i, startTime, (int) consecutive, holiday, weekend);
+            Calendar period = new Calendar(i, startTime, (int) consecutive, weekend.intValue(), holiday.intValue());
             period.setPrev(prev);
             calendarList.add(period);
             prev = period;
         }
-        LocalDateTime lastDate = LocalDateTime.parse((String) "2022-12-31 00:00:00", formatter);
-        Calendar dummy = new Calendar(9999, lastDate, 0, false, false);
+        LocalDateTime lastDate = LocalDateTime.parse("2022-12-31 00:00:00", formatter);
+        Calendar dummy = new Calendar(9999, lastDate, 0, 0 , 0);
         dummy.setPrev(calendarList.get(calendarList.size() -1));
         calendarList.add(dummy);
 

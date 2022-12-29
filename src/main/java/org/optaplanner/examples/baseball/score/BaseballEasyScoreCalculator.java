@@ -110,9 +110,9 @@ public class BaseballEasyScoreCalculator
         continue;
       }
 
-      if (match.getCalendar().isHoliday() || match.getCalendar().isWeekend()) {
+      if (match.getCalendar().getHoliday() > 0) {
         int prevQty = holidayByTeam.getOrDefault(match.getHome(), 0);
-        holidayByTeam.put(match.getHome(), prevQty + 1);
+        holidayByTeam.put(match.getHome(), prevQty + match.getCalendar().getHoliday());
       }
     }
 
@@ -161,20 +161,7 @@ public class BaseballEasyScoreCalculator
     }
     stabilizeDistanceScore -= distanceVariance.intValue();
 
-    if (stabilizeDistanceScore == -14
-        && duplicationHardScore == 0
-        && successiveHardScore == 0
-        && minimizeShortScore == 0
-        && stabilizeHolidayScore == 0) {
-      int t = 1;
-      t = 2;
-      //            logger.info("stabilizeDistanceScore: " + stabilizeDistanceScore);
-      //            for (String team : distanceByTeam.keySet()) {
-      //                BigDecimal distance = distanceByTeam.get(team);
-      //                logger.info("team: " + team + ", distance: " + distance);
-      //
-      //            }
-    }
+
 
     double meanHolidayCount = 0.0;
     for (Team team : holidayByTeam.keySet()) {

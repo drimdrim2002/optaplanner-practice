@@ -10,10 +10,10 @@ public class Calendar extends AbstractPersistable implements Comparable<Calendar
     private Calendar next;
     private Calendar prev;
     private int consecutive;
-    private boolean weekend;
-    private boolean holiday;
+    private int weekend;
+    private int holiday;
 
-    public Calendar(long id, LocalDateTime startTime, int consecutive, boolean weekend, boolean holiday) {
+    public Calendar(long id, LocalDateTime startTime, int consecutive, int weekend, int holiday) {
         super(id);
         this.startTime = startTime;
         this.consecutive = consecutive;
@@ -53,20 +53,28 @@ public class Calendar extends AbstractPersistable implements Comparable<Calendar
         this.consecutive = consecutive;
     }
 
-    public boolean isWeekend() {
-        return weekend;
-    }
+//    public int isWeekend() {
+//        return weekend;
+//    }
 
-    public void setWeekend(boolean weekend) {
+    public void setWeekend(int weekend) {
         this.weekend = weekend;
     }
 
-    public boolean isHoliday() {
-        return holiday;
+//    public boolean isHoliday() {
+//        return holiday;
+//    }
+
+    public void setHoliday(int holiday) {
+        this.holiday = holiday;
     }
 
-    public void setHoliday(boolean holiday) {
-        this.holiday = holiday;
+    public int getWeekend() {
+        return weekend;
+    }
+
+    public int getHoliday() {
+        return holiday;
     }
 
     @Override
