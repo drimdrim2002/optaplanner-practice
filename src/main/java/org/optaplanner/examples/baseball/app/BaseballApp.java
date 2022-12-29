@@ -44,19 +44,11 @@ public class BaseballApp {
 
             exportResult(unsolvedSolution, false);
 
-
             // solving
-            SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource("org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
+            SolverFactory<BaseballSolution> solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/baseball/solver/baseballSolverConfig.xml");
             Solver<BaseballSolution> solver = solverFactory.buildSolver();
             BaseballSolution solvedSolution = solver.solve(unsolvedSolution);
-
-            HashSet<Calendar> calendars = new HashSet<>();
-            for (Match match : solvedSolution.getMatchList()) {
-                calendars.add(match.getCalendar());
-            }
-            for (Calendar calendar : calendars) {
-                logger.info(calendar.toString());
-            }
 
             // export result
             exportResult(solvedSolution, true);
@@ -87,7 +79,7 @@ public class BaseballApp {
     private static void createExcelFile(String status, XSSFWorkbook workbook) {
         long currentMilliseconds = System.currentTimeMillis();
         String fileName = status + "_" + String.valueOf(currentMilliseconds).substring(0, 10);
-        logger.info("fileName: "+ fileName);
+        logger.info("fileName: " + fileName);
         File file = new File("data/baseball/" + status + "/" + fileName + ".xlsx");
         FileOutputStream fos = null;
         try {
@@ -99,8 +91,12 @@ public class BaseballApp {
             e.printStackTrace();
         } finally {
             try {
-                if (workbook != null) workbook.close();
-                if (fos != null) fos.close();
+                if (workbook != null) {
+                    workbook.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
 
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -127,7 +123,7 @@ public class BaseballApp {
             boolean holiday = calendar.getHoliday() > 0;
             if (holiday) {
                 int prevQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
-                holidayByTeam.put(homeTeam.getName(), prevQty + 1);
+                holidayByTeam.put(homeTeam.getName(), prevQty + calendar.getHoliday());
             }
         }
 
@@ -156,11 +152,11 @@ public class BaseballApp {
             rowIndex++;
         }
 
-
         return workbook;
     }
 
-    private static TreeMap<LocalDateTime, List<Match>> createMatchResultsOrderByTime(BaseballSolution baseballSolution) {
+    private static TreeMap<LocalDateTime, List<Match>> createMatchResultsOrderByTime(
+        BaseballSolution baseballSolution) {
         TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime = new TreeMap<>();
         for (Match match : baseballSolution.getMatchList()) {
             LocalDateTime localDateTime = match.getCalendar().getStartTime();
@@ -172,7 +168,8 @@ public class BaseballApp {
         return matchResultsOrderByTime;
     }
 
-    private static void createDistanceAnalysisSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime, XSSFWorkbook workbook) {
+    private static void createDistanceAnalysisSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime,
+        XSSFWorkbook workbook) {
         HashMap<Team, Queue<Match>> visitOrderByTeam = new HashMap<>();
         for (LocalDateTime startTIme : matchResultsOrderByTime.keySet()) {
             for (Match match : matchResultsOrderByTime.get(startTIme)) {
@@ -216,7 +213,6 @@ public class BaseballApp {
 
         cell = row.createCell(7);
         cell.setCellValue("weekdayOrWeekend");
-
 
         int rowIndex = 1;
         for (Team team : visitOrderByTeam.keySet()) {
@@ -264,11 +260,11 @@ public class BaseballApp {
 
                 cell = row.createCell(7);
                 String weekdayOrWeekend = "주말이동";
-                if (prevMatch != null && prevMatch.getCalendar().getStartTime().getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
+                if (prevMatch != null && prevMatch.getCalendar().getStartTime().getDayOfWeek()
+                    .equals(DayOfWeek.TUESDAY)) {
                     weekdayOrWeekend = "주중이동";
-                } 
+                }
                 cell.setCellValue(weekdayOrWeekend);
-
 
                 prevTeam = match.getHome();
                 prevMatch = match;
@@ -278,7 +274,8 @@ public class BaseballApp {
         }
     }
 
-    private static void createScheduleSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime, XSSFWorkbook workbook) {
+    private static void createScheduleSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime,
+        XSSFWorkbook workbook) {
         XSSFSheet scheduleSheet = workbook.createSheet("schedule");
         // 행 생성
         XSSFRow row = scheduleSheet.createRow(0);
@@ -353,9 +350,7 @@ public class BaseballApp {
             calendarHashMap.put(startTIme, calendar);
         }
 
-
         for (Object o : initialPlanArray) {
-
 
             JSONObject initialPlanInfo = (JSONObject) o;
             LocalDateTime datetime = LocalDateTime.parse((String) initialPlanInfo.get("datetime"), formatter);
@@ -372,7 +367,8 @@ public class BaseballApp {
                 if (matchStartTime.getMonth().equals(Month.APRIL) && matchStartTime.getDayOfMonth() == 1) { // 개막전 고정
                     match.setPinned(true);
                     logger.info(initialPlanInfo.toString());
-                } else if (matchStartTime.getMonth().equals(Month.MAY) && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
+                } else if (matchStartTime.getMonth().equals(Month.MAY)
+                    && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
                     match.setPinned(true);
                     logger.info(initialPlanInfo.toString());
 
@@ -383,7 +379,6 @@ public class BaseballApp {
 
     private static BaseballSolution makeSolution(JSONObject jsonObject) {
         HashMap<String, HashMap<String, BigDecimal>> totalDistanceMap = makeDistanceMatrix(jsonObject);
-
 
         HashMap<String, Team> teamHashMap = makeTeamInfo(jsonObject, totalDistanceMap);
 
@@ -396,11 +391,11 @@ public class BaseballApp {
             JSONObject calendarInfo = (JSONObject) periodArray.get(i);
             LocalDateTime startTime = LocalDateTime.parse((String) calendarInfo.get("datetime"), formatter);
             logger.info(startTime.toString());
-            long consecutive =  (Long) calendarInfo.get("consecutive");
+            long consecutive = (Long) calendarInfo.get("consecutive");
 //            boolean holiday = (Long) calendarInfo.get("holiday") == 0 ? false : true;
 //            boolean weekend = (Long) calendarInfo.get("weekend") == 0 ? false : true;
-            Long holiday = (Long)calendarInfo.get("holiday");
-            Long weekend = (Long)calendarInfo.get("weekend");
+            Long holiday = (Long) calendarInfo.get("holiday");
+            Long weekend = (Long) calendarInfo.get("weekend");
 
             Calendar period = new Calendar(i, startTime, (int) consecutive, weekend.intValue(), holiday.intValue());
             period.setPrev(prev);
@@ -408,8 +403,8 @@ public class BaseballApp {
             prev = period;
         }
         LocalDateTime lastDate = LocalDateTime.parse("2022-12-31 00:00:00", formatter);
-        Calendar dummy = new Calendar(9999, lastDate, 0, 0 , 0);
-        dummy.setPrev(calendarList.get(calendarList.size() -1));
+        Calendar dummy = new Calendar(9999L, lastDate, 0, 0, 0);
+        dummy.setPrev(calendarList.get(calendarList.size() - 1));
         calendarList.add(dummy);
 
         for (Calendar period : calendarList) {
@@ -440,7 +435,8 @@ public class BaseballApp {
         return matchList;
     }
 
-    private static HashMap<String, Team> makeTeamInfo(JSONObject jsonObject, HashMap<String, HashMap<String, BigDecimal>> totalDistanceMap) {
+    private static HashMap<String, Team> makeTeamInfo(JSONObject jsonObject,
+        HashMap<String, HashMap<String, BigDecimal>> totalDistanceMap) {
         HashMap<String, Team> teamHashMap = new HashMap<>();
         JSONArray teamJsonArray = (JSONArray) jsonObject.get("teams");
         IntStream.range(0, teamJsonArray.size()).forEach(i -> {
