@@ -214,6 +214,9 @@ public class BaseballApp {
         cell = row.createCell(7);
         cell.setCellValue("weekdayOrWeekend");
 
+        cell = row.createCell(8);
+        cell.setCellValue("path");
+
         int rowIndex = 1;
         for (Team team : visitOrderByTeam.keySet()) {
             Queue<Match> visitOrder = visitOrderByTeam.get(team);
@@ -259,12 +262,25 @@ public class BaseballApp {
                 cell.setCellValue(match.getCalendar().getStartTime().getDayOfWeek().toString());
 
                 cell = row.createCell(7);
-                String weekdayOrWeekend = "주말이동";
-                if (prevMatch != null && prevMatch.getCalendar().getStartTime().getDayOfWeek()
-                    .equals(DayOfWeek.TUESDAY)) {
-                    weekdayOrWeekend = "주중이동";
+                String weekdayOrWeekend = "주말 이동";
+                if (prevMatch != null) {
+                    LocalDateTime prevDate = prevMatch.getCalendar().getStartTime();
+                    if (!isAllStarBreak(prevDate) && prevDate.getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
+                        weekdayOrWeekend = "주중 이동";
+                    }
                 }
+
                 cell.setCellValue(weekdayOrWeekend);
+
+                cell = row.createCell(8);
+
+                String to = match.getHome().getStadium();
+                if (prevMatch != null) {
+                    String from = prevMatch.getHome().getStadium();
+                    cell.setCellValue(from + "-->" + to);
+                } else {
+                    cell.setCellValue(to + "-->" + to);
+                }
 
                 prevTeam = match.getHome();
                 prevMatch = match;
@@ -272,6 +288,13 @@ public class BaseballApp {
                 rowIndex++;
             }
         }
+    }
+
+    private static boolean isAllStarBreak(LocalDateTime prevDate) {
+        if (prevDate.getMonth().equals(Month.JULY) && prevDate.getDayOfMonth() == 11) { // 올스타 브레이크
+            return true;
+        }
+        return false;
     }
 
     private static void createScheduleSheet(TreeMap<LocalDateTime, List<Match>> matchResultsOrderByTime,
@@ -299,6 +322,15 @@ public class BaseballApp {
         cell.setCellValue("matches");
 
         cell = row.createCell(5);
+        cell.setCellValue("holiday score");
+
+        cell = row.createCell(6);
+        cell.setCellValue("children's day");
+
+        cell = row.createCell(7);
+        cell.setCellValue("weekend");
+
+        cell = row.createCell(8);
         cell.setCellValue("holiday");
 
         int rowIndex = 1;
@@ -325,6 +357,28 @@ public class BaseballApp {
 //                boolean holiday = match.getCalendar().getHoliday() > 0 ? true : false;
                 cell.setCellValue(match.getCalendar().getHoliday());
 
+                cell = row.createCell(6);
+                Calendar calendar = match.getCalendar();
+                if (calendar.getStartTime().getMonth() == Month.MAY && calendar.getStartTime().getDayOfMonth() == 5) {
+                    cell.setCellValue(2);
+                } else {
+                    cell.setCellValue(0);
+                }
+
+                cell = row.createCell(7);
+                if (calendar.getWeekend() > 0) {
+                    cell.setCellValue(2);
+                } else {
+                    cell.setCellValue(0);
+                }
+
+                cell = row.createCell(8);
+                if (calendar.getHoliday() > 0 && calendar.getWeekend() == 0) {
+                    cell.setCellValue(calendar.getHoliday());
+                } else {
+                    cell.setCellValue(0);
+
+                }
                 rowIndex++;
             }
         }
