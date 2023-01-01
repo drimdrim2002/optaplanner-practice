@@ -263,13 +263,15 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         BigDecimal distanceVariance = BigDecimal.ZERO;
         for (BigDecimal distance : distanceByTeam.values()) {
             BigDecimal diff = distance.subtract(meanDistance).abs(); // positive, negative에 상관 없이 버림하기 위해서 처리
-            diff = diff.divide(tolerance, 2, RoundingMode.HALF_UP);
+            diff = diff.divide(tolerance, 2, RoundingMode.HALF_UP); // 1보다 큰 경우에는 소수점도 중요하다.
+
+            // 1보다 작은 경우에는 0으로 처리한다. 즉 tolerance 이내인 경우에는 penalty가 없다.
             if (diff.compareTo(BigDecimal.ONE) < 0) {
                 diff = BigDecimal.ZERO;
             }
-            distanceVariance = distanceVariance.add(diff.pow(4));
+            distanceVariance = distanceVariance.add(diff.pow(4)); // 차이가 클수록 가중치를 더한다.
         }
-        distanceVariance = distanceVariance.multiply(BigDecimal.valueOf(1000));
+        distanceVariance = distanceVariance.multiply(BigDecimal.valueOf(1000)); // score 산출시 int로 계산되기 때문에 1,000을 곱함
         return distanceVariance;
     }
 
