@@ -420,7 +420,7 @@ public class BaseballApp {
                 LocalDateTime matchStartTime = calendar.getStartTime();
                 if (matchStartTime.getMonth().equals(Month.APRIL) && matchStartTime.getDayOfMonth() == 1) { // 개막전 고정
                     match.setPinned(true);
-                    logger.info(initialPlanInfo.toString());
+                    logger.info("initial plan fixed: " + initialPlanInfo.toString());
                 }
 //                } else if (matchStartTime.getMonth().equals(Month.MAY)
 //                    && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
@@ -445,7 +445,7 @@ public class BaseballApp {
         for (int i = 0; i < periodArray.size(); i++) {
             JSONObject calendarInfo = (JSONObject) periodArray.get(i);
             LocalDateTime startTime = LocalDateTime.parse((String) calendarInfo.get("datetime"), formatter);
-            logger.info(startTime.toString());
+//            logger.info(startTime.toString());
             long consecutive = (Long) calendarInfo.get("consecutive");
 //            boolean holiday = (Long) calendarInfo.get("holiday") == 0 ? false : true;
 //            boolean weekend = (Long) calendarInfo.get("weekend") == 0 ? false : true;
