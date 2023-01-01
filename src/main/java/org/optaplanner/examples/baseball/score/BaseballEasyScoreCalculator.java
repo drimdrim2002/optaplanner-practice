@@ -1,8 +1,19 @@
 package org.optaplanner.examples.baseball.score;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.baseball.domain.BaseballSolution;
@@ -12,13 +23,33 @@ import org.optaplanner.examples.baseball.domain.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-
 public class BaseballEasyScoreCalculator implements EasyScoreCalculator<BaseballSolution, BendableLongScore> {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseballEasyScoreCalculator.class);
+
+    public enum TOLERANCE {
+        TOTAL_DISTANCE(500),
+        WEEKDAY_DISTANCE(300),
+        HOLIDAY(2);
+
+        private final int tolerance;
+
+        TOLERANCE(int tolerance) {
+            this.tolerance = tolerance;
+        }
+
+        public Integer toInteger() {
+            return Integer.valueOf(tolerance);
+        }
+
+        public BigDecimal toBigDecimal() {
+            return BigDecimal.valueOf(tolerance);
+        }
+    }
+
+    private static final String[] HOME_OBLIGATION_CHILDREN_ARR = {"두산", "롯데", "NC", "키움", "한화"};
+    private static final HashSet<String> HOME_OBLIGATION_CHILDREN = new HashSet<>(
+        Arrays.asList(HOME_OBLIGATION_CHILDREN_ARR));
 
     // hard
     // 1. 하루에 팀이 중복되면 안된다.
@@ -32,7 +63,6 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
     // 4. 거리 평준화
     @Override
     public BendableLongScore calculateScore(BaseballSolution baseballSolution) {
-
         // initialize score
         int duplicationHardScore = 0; // 하루에 10개 팀이 5경기를 해야 함
         int successiveHardScore = 0; // 동일한 팀과 2연전 불가
@@ -89,6 +119,15 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
                 if (match.getConsecutive() != calendarConsecutive) {
                     duplicationHardScore -= 1; // 2023년에는 2연전이 없으므로 별 문제 없지 않을까?
+                }
+
+                if (calendar.getStartTime().getMonth().equals(Month.MAY)
+                    && calendar.getStartTime().getDayOfMonth() == 5) { // 어린이날인 경우
+
+                    if (HOME_OBLIGATION_CHILDREN.contains(awayTeam)) {
+                        duplicationHardScore -= 1; // 어린이 날에는 해당 팀은 무조건 홈경기를 해야 한다.
+
+                    }
                 }
             }
 
@@ -159,7 +198,9 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                     }
 
                     // 주중 이동 여부 판단
-                    if (prevDate != null && prevDate.getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
+                    if (prevDate != null && prevDate.getDayOfWeek().equals(DayOfWeek.TUESDAY)
+                        && !isAllStarBreak(prevDate)
+                    ) {
                         weekdayDistance = weekdayDistance.add(distance);
                     }
 
@@ -177,7 +218,8 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         {
             BigDecimal sumDistance = calculateSumDistance(distanceByTeam);
             BigDecimal meanDistance = sumDistance.divide(BigDecimal.valueOf(10), RoundingMode.DOWN);
-            BigDecimal distanceVariance = calculateDistanceVariance(distanceByTeam, meanDistance);
+            BigDecimal distanceVariance = calculateDistanceVariance(distanceByTeam, meanDistance,
+                TOLERANCE.TOTAL_DISTANCE.toBigDecimal());
             stabilizeDistanceScore -= distanceVariance.intValue();
             totalDistanceScore -= sumDistance.intValue();
         }
@@ -186,7 +228,8 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         {
             BigDecimal sumDistance = calculateSumDistance(weekdayDistanceByMap);
             BigDecimal meanDistance = sumDistance.divide(BigDecimal.valueOf(10), RoundingMode.DOWN);
-            BigDecimal distanceVariance = calculateDistanceVariance(weekdayDistanceByMap, meanDistance);
+            BigDecimal distanceVariance = calculateDistanceVariance(weekdayDistanceByMap, meanDistance,
+                TOLERANCE.WEEKDAY_DISTANCE.toBigDecimal());
             stabilizeWeekdayDistanceScore -= distanceVariance.intValue();
 
         }
@@ -202,7 +245,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         for (Team team : holidayByTeam.keySet()) {
             int holidayCnt = holidayByTeam.get(team);
             double diff = Math.abs(holidayCnt - meanHolidayCount);
-            diff /= 2; // 2경기 차이는 봐준다.
+            diff /= TOLERANCE.HOLIDAY.toInteger(); // 2경기 차이는 허용한다.
             diff = Math.floor(diff);
             diff = Math.pow(diff, 2);
             holidayVariance += diff;
@@ -210,19 +253,23 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
         stabilizeHolidayScore -= holidayVariance;
 
-//        stabilizeDistanceScore /= 100;
         return BendableLongScore.of(new long[]{duplicationHardScore, successiveHardScore},
             new long[]{minimizeShortScore, stabilizeHolidayScore, stabilizeWeekdayDistanceScore, stabilizeDistanceScore,
                 totalDistanceScore});
     }
 
-    private BigDecimal calculateDistanceVariance(HashMap<String, BigDecimal> distanceByTeam, BigDecimal meanDistance) {
+    private BigDecimal calculateDistanceVariance(HashMap<String, BigDecimal> distanceByTeam, BigDecimal meanDistance,
+        BigDecimal tolerance) {
         BigDecimal distanceVariance = BigDecimal.ZERO;
         for (BigDecimal distance : distanceByTeam.values()) {
-            BigDecimal diff = distance.subtract(meanDistance);
-            diff = diff.divide(BigDecimal.valueOf(100), RoundingMode.DOWN);
-            distanceVariance = distanceVariance.add(diff.pow(2));
+            BigDecimal diff = distance.subtract(meanDistance).abs(); // positive, negative에 상관 없이 버림하기 위해서 처리
+            diff = diff.divide(tolerance, 2, RoundingMode.HALF_UP);
+            if (diff.compareTo(BigDecimal.ONE) < 0) {
+                diff = BigDecimal.ZERO;
+            }
+            distanceVariance = distanceVariance.add(diff.pow(4));
         }
+        distanceVariance = distanceVariance.multiply(BigDecimal.valueOf(1000));
         return distanceVariance;
     }
 
@@ -249,5 +296,12 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             matchListByCalendar.get(calendar).add(match);
         }
         return matchListByCalendar;
+    }
+
+    private static boolean isAllStarBreak(LocalDateTime prevDate) {
+        if (prevDate.getMonth().equals(Month.JULY) && prevDate.getDayOfMonth() == 11) { // 올스타 브레이크
+            return true;
+        }
+        return false;
     }
 }

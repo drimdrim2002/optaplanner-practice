@@ -421,12 +421,13 @@ public class BaseballApp {
                 if (matchStartTime.getMonth().equals(Month.APRIL) && matchStartTime.getDayOfMonth() == 1) { // 개막전 고정
                     match.setPinned(true);
                     logger.info(initialPlanInfo.toString());
-                } else if (matchStartTime.getMonth().equals(Month.MAY)
-                    && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
-                    match.setPinned(true);
-                    logger.info(initialPlanInfo.toString());
-
                 }
+//                } else if (matchStartTime.getMonth().equals(Month.MAY)
+//                    && matchStartTime.getDayOfMonth() == 5) { // 어린이날 고정
+//                    match.setPinned(true);
+//                    logger.info(initialPlanInfo.toString());
+//
+//                }
             }
         }
     }
