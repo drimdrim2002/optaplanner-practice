@@ -1,5 +1,6 @@
 package org.optaplanner.examples.baseball.app;
 
+import java.util.Map.Entry;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -118,7 +119,94 @@ public class BaseballApp {
 
         createHolidayAnalysis(baseballSolution, workbook);
 
+        createHolidayDetails(baseballSolution, workbook);
+
         return workbook;
+    }
+
+    private static void createHolidayDetails(BaseballSolution baseballSolution, XSSFWorkbook workbook) {
+        HashMap<String, Integer> holidayScoreByTeam = new HashMap<>();
+        HashMap<String, Integer> childrenSDaysByTeam = new HashMap<>();
+        HashMap<String, Integer> weekendByTeam = new HashMap<>();
+        HashMap<String, Integer> holidayByTeam = new HashMap<>();
+        for (Match match : baseballSolution.getMatchList()) {
+            Team homeTeam = match.getHome();
+            Calendar calendar = match.getCalendar();
+            boolean holiday = calendar.getHoliday() > 0;
+            if (holiday) {
+                int prevQty = holidayScoreByTeam.getOrDefault(homeTeam.getName(), 0);
+                holidayScoreByTeam.put(homeTeam.getName(), prevQty + calendar.getHoliday());
+
+                if (calendar.getStartTime().getMonth().equals(Month.MAY)
+                    && calendar.getStartTime().getDayOfMonth() == 5) {
+                    childrenSDaysByTeam.put(homeTeam.getName(), 1);
+                }
+
+                if (calendar.getWeekend() > 0) {
+                    int weekendQty = weekendByTeam.getOrDefault(homeTeam.getName(), 0);
+                    weekendByTeam.put(homeTeam.getName(), weekendQty + calendar.getWeekend() * 2);
+
+                } else {
+                    int holidayQty = holidayByTeam.getOrDefault(homeTeam.getName(), 0);
+                    holidayByTeam.put(homeTeam.getName(), holidayQty + 1);
+                }
+            }
+        }
+
+        // 워크시트 생성
+        XSSFSheet sheet = workbook.createSheet("holidayDetails");
+        // 행 생성
+        XSSFRow row = sheet.createRow(0);
+        // 쎌 생성
+        XSSFCell cell;
+        // 헤더 정보 구성
+        cell = row.createCell(0);
+        cell.setCellValue("team");
+
+        cell = row.createCell(1);
+        cell.setCellValue("holidayType");
+
+        cell = row.createCell(2);
+        cell.setCellValue("count");
+
+        int rowIndex = 0;
+
+        for (Entry<String, Integer> stringIntegerEntry : holidayScoreByTeam.entrySet()) {
+            String teamName = stringIntegerEntry.getKey();
+
+//            rowIndex = createHolidayDetailRow(sheet, rowIndex, teamName, "HolidayCount", holidayScoreByTeam);
+
+            rowIndex = createHolidayDetailRow(sheet, rowIndex, teamName, "Children's day", childrenSDaysByTeam);
+
+            rowIndex = createHolidayDetailRow(sheet, rowIndex, teamName, "Weekend", weekendByTeam);
+
+            rowIndex = createHolidayDetailRow(sheet, rowIndex, teamName, "Holiday", holidayByTeam);
+
+
+        }
+
+    }
+
+    private static int createHolidayDetailRow(XSSFSheet sheet, int rowIndex, String teamName, String columnName,
+        HashMap<String, Integer> holidayCountByTeam) {
+
+        if (!holidayCountByTeam.containsKey(teamName)) {
+            return rowIndex;
+        }
+
+        rowIndex += 1;
+        XSSFRow row = sheet.createRow(rowIndex);
+
+        XSSFCell cell = row.createCell(0);
+        cell.setCellValue(teamName);
+
+        cell = row.createCell(1);
+        cell.setCellValue(columnName);
+
+        cell = row.createCell(2);
+        cell.setCellValue(holidayCountByTeam.get(teamName));
+
+        return rowIndex;
     }
 
     private static void createHolidayAnalysis(BaseballSolution baseballSolution, XSSFWorkbook workbook) {
