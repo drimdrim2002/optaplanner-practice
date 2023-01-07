@@ -116,6 +116,12 @@ public class BaseballApp {
 
         createDistanceAnalysisSheet(matchResultsOrderByTime, workbook);
 
+        createHolidayAnalysis(baseballSolution, workbook);
+
+        return workbook;
+    }
+
+    private static void createHolidayAnalysis(BaseballSolution baseballSolution, XSSFWorkbook workbook) {
         HashMap<String, Integer> holidayByTeam = new HashMap<>();
         for (Match match : baseballSolution.getMatchList()) {
             Team homeTeam = match.getHome();
@@ -151,8 +157,6 @@ public class BaseballApp {
             cell.setCellValue(holidayByTeam.get(team));
             rowIndex++;
         }
-
-        return workbook;
     }
 
     private static TreeMap<LocalDateTime, List<Match>> createMatchResultsOrderByTime(
