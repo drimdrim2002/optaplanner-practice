@@ -510,7 +510,7 @@ public class BaseballApp {
                 Calendar calendar = calendarHashMap.get(datetime);
                 match.setCalendar(calendar);
                 LocalDateTime matchStartTime = calendar.getStartTime();
-                if (matchStartTime.getMonth().equals(Month.APRIL) && matchStartTime.getDayOfMonth() == 1) { // 개막전 고정
+                if (matchStartTime.getMonth().equals(Month.MARCH) && matchStartTime.getDayOfMonth() == 23) { // 개막전 고정
                     match.setPinned(true);
                     logger.info("initial plan fixed: " + initialPlanInfo.toString());
                 }
@@ -536,7 +536,8 @@ public class BaseballApp {
         Calendar prev = null;
         for (int i = 0; i < periodArray.size(); i++) {
             JSONObject calendarInfo = (JSONObject) periodArray.get(i);
-            LocalDateTime startTime = LocalDateTime.parse((String) calendarInfo.get("datetime"), formatter);
+            LocalDateTime startTime =
+                LocalDateTime.parse(calendarInfo.get("datetime").toString(), formatter);
 //            logger.info(startTime.toString());
             long consecutive = (Long) calendarInfo.get("consecutive");
 //            boolean holiday = (Long) calendarInfo.get("holiday") == 0 ? false : true;
@@ -549,7 +550,7 @@ public class BaseballApp {
             calendarList.add(period);
             prev = period;
         }
-        LocalDateTime lastDate = LocalDateTime.parse("2022-12-31 00:00:00", formatter);
+        LocalDateTime lastDate = LocalDateTime.parse("2024-12-31 00:00:00", formatter);
         Calendar dummy = new Calendar(9999L, lastDate, 0, 0, 0);
         dummy.setPrev(calendarList.get(calendarList.size() - 1));
         calendarList.add(dummy);
@@ -622,7 +623,7 @@ public class BaseballApp {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
         try {
-            Reader reader = new FileReader("data/baseball/input.json");
+            Reader reader = new FileReader("data/baseball/input_2024.json");
 //            Reader reader = new FileReader("../../../data/baseball/input.json");
             jsonObject = (JSONObject) parser.parse(reader);
 

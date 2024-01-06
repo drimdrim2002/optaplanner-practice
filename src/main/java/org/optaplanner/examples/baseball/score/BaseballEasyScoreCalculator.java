@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 public class BaseballEasyScoreCalculator implements EasyScoreCalculator<BaseballSolution, BendableLongScore> {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseballEasyScoreCalculator.class);
-    private static final String[] HOME_OBLIGATION_CHILDREN_ARR = {"두산", "롯데", "NC", "키움", "한화"};
+    private static final String[] HOME_OBLIGATION_CHILDREN_ARR = {"LG", "SSG", "KT", "삼성", "KIA"};
     private static final HashSet<String> HOME_OBLIGATION_CHILDREN = new HashSet<>(
         Arrays.asList(HOME_OBLIGATION_CHILDREN_ARR));
 
     private static boolean isAllStarBreak(LocalDateTime prevDate) {
-        if (prevDate.getMonth().equals(Month.JULY) && prevDate.getDayOfMonth() == 11) { // 올스타 브레이크
+        if (prevDate.getMonth().equals(Month.JULY) && prevDate.getDayOfMonth() == 2) { // 올스타 브레이크
             return true;
         }
         return false;
@@ -54,7 +54,6 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
         int successiveHardScore = 0; // 동일한 팀과 2연전 불가
 
         int minimizeShortScore = 0; // short 최소화
-        // todo 주중 경기 이동 및 거리 균등 배분
         int stabilizeWeekdayDistanceScore = 0;
         int stabilizeDistanceScore = 0; // 거리 균등하게 배분
         int stabilizeHolidayScore = 0; // holiday 균등 배분
@@ -109,7 +108,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
                 }
 
                 if (calendar.getStartTime().getMonth().equals(Month.MAY)
-                    && calendar.getStartTime().getDayOfMonth() == 5) { // 어린이날인 경우
+                    && calendar.getStartTime().getDayOfMonth() == 3) { // 어린이날인 경우
 
                     if (HOME_OBLIGATION_CHILDREN.contains(awayTeam)) {
                         duplicationHardScore -= 1; // 어린이 날에는 해당 팀은 무조건 홈경기를 해야 한다.
@@ -239,6 +238,8 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
             new long[]{minimizeShortScore, stabilizeHolidayScore, stabilizeWeekdayMoveScore,
                 stabilizeWeekdayDistanceScore, stabilizeDistanceScore,
                 totalDistanceScore});
+
+
     }
 
     private double calculateDayScore(HashMap<Team, Integer> holidayByTeam) {
@@ -306,7 +307,7 @@ public class BaseballEasyScoreCalculator implements EasyScoreCalculator<Baseball
 
     public enum TOLERANCE {
         TOTAL_DISTANCE(500),
-        WEEKDAY_DISTANCE(300),
+        WEEKDAY_DISTANCE(200),
         HOLIDAY(1.5);
 
         private final double tolerance;
